@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class FlightRequest extends FormRequest
 {
@@ -13,7 +14,20 @@ class FlightRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $token = $this->header('Authorization');
+
+        if (!$token) {
+            return false;
+        }
+
+        // TODO: Check if header is valid
+        $user = JWTAuth::parseToken()->authenticate();
+
+        if (!$user) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**

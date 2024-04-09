@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\FlightRequest;
 use App\Models\Flights;
+use Illuminate\Support\Facades\Log;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class FlightController extends Controller
 {
