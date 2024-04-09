@@ -2,26 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FlightRequest;
 use App\Models\Flights;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Validator;
 
 class FlightController extends Controller
 {
     public function index() {
         $flights = Flights::all();
         return response()->json($flights);
-    }
-
-    public function create(Request $request) {
-        $flight = new Flights;
-        $flight->departure_date = $request->departure_date;
-        $flight->flight_number = $request->flight_number;
-        $flight->departure_airport = $request->departure_airport;
-        $flight->arrival_airport = $request->arrival_airport;
-        $flight->distance = $request->distance;
-        $flight->airline = $request->airline;
-        $flight->save();
-        return response()->json($flight, 201);
     }
 
     public function get(string $id) {
@@ -34,5 +24,18 @@ class FlightController extends Controller
                 'message' => 'Flight not found',
             ], 404);
         }
+    }
+
+    public function create(FlightRequest $request) {
+
+        $flight = new Flights;
+        $flight->departure_date = $request->departure_date;
+        $flight->flight_number = $request->flight_number;
+        $flight->departure_airport = $request->departure_airport;
+        $flight->arrival_airport = $request->arrival_airport;
+        $flight->distance = $request->distance;
+        $flight->airline = $request->airline;
+        $flight->save();
+        return response()->json($flight, 201);
     }
 }
