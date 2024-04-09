@@ -38,4 +38,37 @@ class FlightController extends Controller
         $flight->save();
         return response()->json($flight, 201);
     }
+
+    public function update(string $id, FlightRequest $request) {
+        if (Flights::where('id', $id)->exists()) {
+            $flight = Flights::find($id);
+
+            $flight->departure_date = $request->departure_date;
+            $flight->flight_number = $request->flight_number;
+            $flight->departure_airport = $request->departure_airport;
+            $flight->arrival_airport = $request->arrival_airport;
+            $flight->distance = $request->distance;
+            $flight->airline = $request->airline;
+            $flight->save();
+
+            return response()->json($flight);
+        } else {
+            return response()->json([
+                'message' => 'Flight not found',
+            ], 404);
+        }
+    }
+
+    public function delete(string $id) {
+        if (Flights::where('id', $id)->exists()) {
+            $flight = Flights::find($id);
+            $flight->delete();
+
+            return response()->json([], 204);
+        } else {
+            return response()->json([
+                'message' => 'Flight not found',
+            ], 404);
+        }
+    }
 }
