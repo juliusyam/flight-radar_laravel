@@ -14,20 +14,7 @@ class FlightRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        $token = $this->header('Authorization');
-
-        if (!$token) {
-            return false;
-        }
-
-        // TODO: Check if header is valid
-        $user = JWTAuth::parseToken()->authenticate();
-
-        if (!$user) {
-            return false;
-        } else {
-            return true;
-        }
+        return true;
     }
 
     /**

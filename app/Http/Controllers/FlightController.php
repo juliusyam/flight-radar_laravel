@@ -4,24 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\FlightRequest;
 use App\Models\Flights;
-use PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException;
-use PHPOpenSourceSaver\JWTAuth\Exceptions\TokenExpiredException;
-use PHPOpenSourceSaver\JWTAuth\Exceptions\TokenInvalidException;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class FlightController extends Controller
 {
     public function index() {
 
-        try {
-            if (!$user = JWTAuth::parseToken()->authenticate()) {
-                return response()->json([
-                    'message' => 'User not found'
-                ], 404);
-            }
-        } catch (TokenExpiredException|TokenInvalidException|JWTException) {
-            return response()->json(['message' => 'Token expired or invalid'], 401);
-        }
+        $user = JWTAuth::parseToken()->authenticate();
 
         $flights = Flights::all()->where('user_id', $user->id);
         return $flights;
@@ -30,15 +19,7 @@ class FlightController extends Controller
 
     public function getFlightStats() {
 
-        try {
-            if (!$user = JWTAuth::parseToken()->authenticate()) {
-                return response()->json([
-                    'message' => 'User not found'
-                ], 404);
-            }
-        } catch (TokenExpiredException|TokenInvalidException|JWTException) {
-            return response()->json(['message' => 'Token expired or invalid'], 401);
-        }
+        $user = JWTAuth::parseToken()->authenticate();
 
         $flights = Flights::all()->where('user_id', $user->id);
 
@@ -51,20 +32,13 @@ class FlightController extends Controller
             'total_flights' => $flights->count(),
             'total_distance' => array_sum(array_column($flights->toArray(), 'distance')),
             'top_airports' => array_count_values($airports),
+            'top_airlines' => array_count_values(array_column($flights->toArray(), 'airline')),
         ]);
     }
 
     public function get(string $id) {
 
-        try {
-            if (!$user = JWTAuth::parseToken()->authenticate()) {
-                return response()->json([
-                    'message' => 'User not found'
-                ], 404);
-            }
-        } catch (TokenExpiredException|TokenInvalidException|JWTException) {
-            return response()->json(['message' => 'Token expired or invalid'], 401);
-        }
+        $user = JWTAuth::parseToken()->authenticate();
 
         $flight = Flights::find($id);
 
@@ -79,15 +53,7 @@ class FlightController extends Controller
 
     public function create(FlightRequest $request) {
 
-        try {
-            if (!$user = JWTAuth::parseToken()->authenticate()) {
-                return response()->json([
-                    'message' => 'User not found'
-                ], 404);
-            }
-        } catch (TokenExpiredException|TokenInvalidException|JWTException) {
-            return response()->json(['message' => 'Token expired or invalid'], 401);
-        }
+        $user = JWTAuth::parseToken()->authenticate();
 
         $flight = new Flights;
         $flight->departure_date = $request->departure_date;
@@ -103,15 +69,7 @@ class FlightController extends Controller
 
     public function update(string $id, FlightRequest $request) {
 
-        try {
-            if (!$user = JWTAuth::parseToken()->authenticate()) {
-                return response()->json([
-                    'message' => 'User not found'
-                ], 404);
-            }
-        } catch (TokenExpiredException|TokenInvalidException|JWTException) {
-            return response()->json(['message' => 'Token expired or invalid'], 401);
-        }
+        $user = JWTAuth::parseToken()->authenticate();
 
         $flight = Flights::find($id);
 
@@ -134,15 +92,7 @@ class FlightController extends Controller
 
     public function delete(string $id) {
 
-        try {
-            if (!$user = JWTAuth::parseToken()->authenticate()) {
-                return response()->json([
-                    'message' => 'User not found'
-                ], 404);
-            }
-        } catch (TokenExpiredException|TokenInvalidException|JWTException) {
-            return response()->json(['message' => 'Token expired or invalid'], 401);
-        }
+        $user = JWTAuth::parseToken()->authenticate();
 
         $flight = Flights::find($id);
 
