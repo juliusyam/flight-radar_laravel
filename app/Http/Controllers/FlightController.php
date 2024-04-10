@@ -53,6 +53,16 @@ class FlightController extends Controller
 
     public function create(FlightRequest $request) {
 
+        try {
+            if (!$user = JWTAuth::parseToken()->authenticate()) {
+                return response()->json([
+                    'message' => 'User not found'
+                ], 404);
+            }
+        } catch (TokenExpiredException|TokenInvalidException|JWTException) {
+            return response()->json(['message' => 'Token expired or invalid'], 401);
+        }
+
         $flight = new Flights;
         $flight->departure_date = $request->departure_date;
         $flight->flight_number = $request->flight_number;
@@ -60,14 +70,26 @@ class FlightController extends Controller
         $flight->arrival_airport = $request->arrival_airport;
         $flight->distance = $request->distance;
         $flight->airline = $request->airline;
+        $flight->user_id = $user->id;
         $flight->save();
         return response()->json($flight, 201);
     }
 
     public function update(string $id, FlightRequest $request) {
-        if (Flights::where('id', $id)->exists()) {
-            $flight = Flights::find($id);
 
+        try {
+            if (!$user = JWTAuth::parseToken()->authenticate()) {
+                return response()->json([
+                    'message' => 'User not found'
+                ], 404);
+            }
+        } catch (TokenExpiredException|TokenInvalidException|JWTException) {
+            return response()->json(['message' => 'Token expired or invalid'], 401);
+        }
+
+        $flight = Flights::find($id);
+
+        if (!empty($flight) && $flight->user_id === $user->id) {
             $flight->departure_date = $request->departure_date;
             $flight->flight_number = $request->flight_number;
             $flight->departure_airport = $request->departure_airport;
@@ -85,8 +107,20 @@ class FlightController extends Controller
     }
 
     public function delete(string $id) {
-        if (Flights::where('id', $id)->exists()) {
-            $flight = Flights::find($id);
+
+        try {
+            if (!$user = JWTAuth::parseToken()->authenticate()) {
+                return response()->json([
+                    'message' => 'User not found'
+                ], 404);
+            }
+        } catch (TokenExpiredException|TokenInvalidException|JWTException) {
+            return response()->json(['message' => 'Token expired or invalid'], 401);
+        }
+
+        $flight = Flights::find($id);
+
+        if (!empty($flight) && $flight->user_id === $user->id) {
             $flight->delete();
 
             return response()->json([], 204);
