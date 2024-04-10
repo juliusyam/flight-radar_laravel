@@ -8,6 +8,7 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/flights', [FlightController::class, 'index']);
+Route::get('/flight-stats', [FlightController::class, 'getFlightStats']);
 Route::get('/flights/{id}', [FlightController::class, 'get']);
 Route::post('/flights', [FlightController::class, 'create']);
 Route::put('/flights/{id}', [FlightController::class, 'update']);

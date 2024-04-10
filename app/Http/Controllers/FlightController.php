@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\FlightRequest;
 use App\Models\Flights;
-use Illuminate\Support\Facades\Log;
 use PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException;
 use PHPOpenSourceSaver\JWTAuth\Exceptions\TokenExpiredException;
 use PHPOpenSourceSaver\JWTAuth\Exceptions\TokenInvalidException;
@@ -26,6 +25,33 @@ class FlightController extends Controller
 
         $flights = Flights::all()->where('user_id', $user->id);
         return $flights;
+    }
+
+
+    public function getFlightStats() {
+
+        try {
+            if (!$user = JWTAuth::parseToken()->authenticate()) {
+                return response()->json([
+                    'message' => 'User not found'
+                ], 404);
+            }
+        } catch (TokenExpiredException|TokenInvalidException|JWTException) {
+            return response()->json(['message' => 'Token expired or invalid'], 401);
+        }
+
+        $flights = Flights::all()->where('user_id', $user->id);
+
+        $airports = array_merge(
+            array_column($flights->toArray(), 'departure_airport'),
+            array_column($flights->toArray(), 'arrival_airport'),
+        );
+
+        return response()->json([
+            'total_flights' => $flights->count(),
+            'total_distance' => array_sum(array_column($flights->toArray(), 'distance')),
+            'top_airports' => array_count_values($airports),
+        ]);
     }
 
     public function get(string $id) {
