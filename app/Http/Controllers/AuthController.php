@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AuthRequest;
+use App\Http\Requests\LoginRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -27,7 +28,7 @@ class AuthController extends Controller
         ], 201);
     }
 
-    public function login(AuthRequest $request) {
+    public function login(LoginRequest $request) {
         $credentials = $request->only('email', 'password');
 
         $token = Auth::attempt($credentials);
