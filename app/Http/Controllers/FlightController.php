@@ -12,8 +12,7 @@ class FlightController extends Controller
 
         $user = JWTAuth::parseToken()->authenticate();
 
-        $flights = Flights::all()->where('user_id', $user->id);
-        return $flights;
+        return Flights::all()->where('user_id', $user->id);
     }
 
 
