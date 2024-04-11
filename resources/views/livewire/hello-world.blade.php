@@ -1,8 +1,12 @@
 <div>
     <section>
-        <h2>Name Input</h2>
-        <input type="text" wire:model.live="name">
-        <h6>Hello from {{ $name }}.</h6>
+        <h2>Login</h2>
+        <input type="email" wire:model.live="email">
+        <input type="password" wire:model.live="password">
+
+        <button type="button" wire:click="login">Login</button>
+
+        <h6>Token: {{ $token }}</h6>
     </section>
 
     <br>
