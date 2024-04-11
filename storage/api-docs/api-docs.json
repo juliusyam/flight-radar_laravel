@@ -39,6 +39,101 @@
                     }
                 ]
             }
+        },
+        "/api/flight-stats": {
+            "get": {
+                "tags": [
+                    "Flights"
+                ],
+                "summary": "Get an abundance of flight stats from user's flight history",
+                "operationId": "0eb3b95a664cd8792dfaa9b2cd796916",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Token is invalid"
+                    },
+                    "404": {
+                        "description": "Unable to retrieve user from database"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/api/flights/{id}": {
+            "get": {
+                "tags": [
+                    "Flights"
+                ],
+                "summary": "Get a specific flight",
+                "operationId": "68077cee376d99dd1f625e4b5c0236b5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Flight ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Token is invalid"
+                    },
+                    "404": {
+                        "description": "Unable to retrieve flight"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Flights"
+                ],
+                "summary": "Delete a specific flight from user's flight list",
+                "operationId": "59fd658ea7800ce51bbc12bb83c73c79",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Flight ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successfully deleted flight"
+                    },
+                    "401": {
+                        "description": "Token is invalid"
+                    },
+                    "404": {
+                        "description": "Unable to retrieve flight"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            }
         }
     },
     "components": {

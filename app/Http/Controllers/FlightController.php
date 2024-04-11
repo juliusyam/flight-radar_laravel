@@ -8,8 +8,6 @@ use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class FlightController extends Controller
 {
-
-
     /**
      * @OA\Get(
      *     path="/api/flights",
@@ -28,7 +26,17 @@ class FlightController extends Controller
         return array_merge(Flights::all()->where('user_id', $user->id)->toArray());
     }
 
-
+    /**
+     * @OA\Get(
+     *     path="/api/flight-stats",
+     *     summary="Get an abundance of flight stats from user's flight history",
+     *     tags={"Flights"},
+     *     security={{"token": {}}},
+     *     @OA\Response(response=200, description="Successful operation"),
+     *     @OA\Response(response=401, description="Token is invalid"),
+     *     @OA\Response(response=404, description="Unable to retrieve user from database")
+     * )
+     */
     public function getFlightStats() {
 
         $user = JWTAuth::parseToken()->authenticate();
@@ -48,6 +56,26 @@ class FlightController extends Controller
         ]);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/flights/{id}",
+     *     summary="Get a specific flight",
+     *     tags={"Flights"},
+     *     security={{"token": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         description="Flight ID",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Successful operation"),
+     *     @OA\Response(response=401, description="Token is invalid"),
+     *     @OA\Response(response=404, description="Unable to retrieve flight")
+     * )
+     */
     public function get(string $id) {
 
         $user = JWTAuth::parseToken()->authenticate();
@@ -102,6 +130,26 @@ class FlightController extends Controller
         }
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/api/flights/{id}",
+     *     summary="Delete a specific flight from user's flight list",
+     *     tags={"Flights"},
+     *     security={{"token": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         description="Flight ID",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(response=204, description="Successfully deleted flight"),
+     *     @OA\Response(response=401, description="Token is invalid"),
+     *     @OA\Response(response=404, description="Unable to retrieve flight")
+     * )
+     */
     public function delete(string $id) {
 
         $user = JWTAuth::parseToken()->authenticate();
