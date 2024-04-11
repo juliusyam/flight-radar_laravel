@@ -1,0 +1,59 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Flight Radar - Laravel",
+        "description": "This is a Rest API built with Laravel for tracking personal flight hidstory",
+        "contact": {
+            "name": "Swagger API Team"
+        },
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8000",
+            "description": "API server"
+        }
+    ],
+    "paths": {
+        "/api/flights": {
+            "get": {
+                "tags": [
+                    "Flights"
+                ],
+                "summary": "Get a list of flights created by the user",
+                "operationId": "4baffc280d4c3e239575b8c57e979397",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Token is invalid"
+                    },
+                    "404": {
+                        "description": "Unable to retrieve user from database"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "token": {
+                "type": "apiKey",
+                "name": "Authorization",
+                "in": "header"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Flights",
+            "description": "Flights related operations"
+        }
+    ]
+}

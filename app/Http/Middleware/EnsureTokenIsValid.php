@@ -22,13 +22,13 @@ class EnsureTokenIsValid
         try {
             if (!JWTAuth::parseToken()->authenticate()) {
                 return response()->json([
-                    'message' => 'User not foundddd'
+                    'message' => 'User not found'
                 ], 404);
             } else {
                 return $next($request);
             }
         } catch (TokenExpiredException|TokenInvalidException|JWTException) {
-            return response()->json(['message' => 'Token expired or invalidddd'], 401);
+            return response()->json(['message' => 'Token expired or invalid'], 401);
         }
     }
 }

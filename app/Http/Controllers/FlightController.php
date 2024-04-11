@@ -8,6 +8,19 @@ use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class FlightController extends Controller
 {
+
+
+    /**
+     * @OA\Get(
+     *     path="/api/flights",
+     *     summary="Get a list of flights created by the user",
+     *     tags={"Flights"},
+     *     security={{"token": {}}},
+     *     @OA\Response(response=200, description="Successful operation"),
+     *     @OA\Response(response=401, description="Token is invalid"),
+     *     @OA\Response(response=404, description="Unable to retrieve user from database")
+     * )
+     */
     public function index() {
 
         $user = JWTAuth::parseToken()->authenticate();
