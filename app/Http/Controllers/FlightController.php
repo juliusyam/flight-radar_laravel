@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\FlightRequest;
 use App\Models\Flights;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class FlightController extends Controller
@@ -19,11 +21,28 @@ class FlightController extends Controller
      *     @OA\Response(response=404, description="Unable to retrieve user from database")
      * )
      */
-    public function index() {
+    public function index(Request $request) {
 
         $user = JWTAuth::parseToken()->authenticate();
 
-        return array_merge(Flights::all()->where('user_id', $user->id)->toArray());
+        $flights = Flights::all()->where('user_id', $user->id);
+
+        $airline = $request->query('airline');
+
+        if ($airline) {
+            $flights = $flights->where('airline', '>=', $airline);
+        }
+
+        $airport = $request->query('airport');
+
+        if ($airport) {
+            $departingFlights = $flights->where('departure_airport', '=', $airport);
+            $arrivingFlights = $flights->where('arrival_airport', '=', $airport);
+
+            $flights = $departingFlights->merge($arrivingFlights);
+        }
+
+        return array_merge($flights->toArray());
     }
 
     /**
