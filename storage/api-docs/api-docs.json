@@ -38,6 +38,66 @@
                         "token": []
                     }
                 ]
+            },
+            "post": {
+                "tags": [
+                    "Flights"
+                ],
+                "summary": "Create a new flight",
+                "operationId": "c34d49c92e19085907c2b95d755a93f6",
+                "requestBody": {
+                    "description": "Flight payload format",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "departure_date": {
+                                        "description": "Departure Date in ISO 8601 Format",
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "flight_number": {
+                                        "description": "Flight number",
+                                        "type": "string"
+                                    },
+                                    "departure_airport": {
+                                        "description": "Departure airport in IATA Code",
+                                        "type": "string"
+                                    },
+                                    "arrival_airport": {
+                                        "description": "Departure airport in IATA Code",
+                                        "type": "string"
+                                    },
+                                    "distance": {
+                                        "description": "Flight distance in miles",
+                                        "type": "number"
+                                    },
+                                    "airline": {
+                                        "description": "Airline in ICAO Code",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successfully created flight"
+                    },
+                    "401": {
+                        "description": "Token is invalid"
+                    },
+                    "404": {
+                        "description": "Unable to retrieve flight"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
             }
         },
         "/api/flight-stats": {
@@ -86,6 +146,77 @@
                 "responses": {
                     "200": {
                         "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Token is invalid"
+                    },
+                    "404": {
+                        "description": "Unable to retrieve flight"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Flights"
+                ],
+                "summary": "Update an existing flight",
+                "operationId": "29d9b985eff7a7d40f56bd4a377854c9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Flight ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Flight payload format",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "departure_date": {
+                                        "description": "Departure Date in ISO 8601 Format",
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "flight_number": {
+                                        "description": "Flight number",
+                                        "type": "string"
+                                    },
+                                    "departure_airport": {
+                                        "description": "Departure airport in IATA Code",
+                                        "type": "string"
+                                    },
+                                    "arrival_airport": {
+                                        "description": "Departure airport in IATA Code",
+                                        "type": "string"
+                                    },
+                                    "distance": {
+                                        "description": "Flight distance in miles",
+                                        "type": "number"
+                                    },
+                                    "airline": {
+                                        "description": "Airline in ICAO Code",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful updated flight"
                     },
                     "401": {
                         "description": "Token is invalid"

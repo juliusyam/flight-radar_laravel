@@ -91,6 +91,56 @@ class FlightController extends Controller
         }
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/flights",
+     *     summary="Create a new flight",
+     *     tags={"Flights"},
+     *     security={{"token": {}}},
+     *     @OA\RequestBody(
+     *         description="Flight payload format",
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="departure_date",
+     *                     description="Departure Date in ISO 8601 Format",
+     *                     type="date"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="flight_number",
+     *                     description="Flight number",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="departure_airport",
+     *                     description="Departure airport in IATA Code",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="arrival_airport",
+     *                     description="Departure airport in IATA Code",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="distance",
+     *                     description="Flight distance in miles",
+     *                     type="number"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="airline",
+     *                     description="Airline in ICAO Code",
+     *                     type="string"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=201, description="Successfully created flight"),
+     *     @OA\Response(response=401, description="Token is invalid"),
+     *     @OA\Response(response=404, description="Unable to retrieve flight")
+     * )
+     */
     public function create(FlightRequest $request) {
 
         $user = JWTAuth::parseToken()->authenticate();
@@ -107,6 +157,65 @@ class FlightController extends Controller
         return response()->json($flight, 201);
     }
 
+    /**
+     * @OA\Put(
+     *     path="/api/flights/{id}",
+     *     summary="Update an existing flight",
+     *     tags={"Flights"},
+     *     security={{"token": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         description="Flight ID",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Flight payload format",
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="departure_date",
+     *                     description="Departure Date in ISO 8601 Format",
+     *                     type="date"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="flight_number",
+     *                     description="Flight number",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="departure_airport",
+     *                     description="Departure airport in IATA Code",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="arrival_airport",
+     *                     description="Departure airport in IATA Code",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="distance",
+     *                     description="Flight distance in miles",
+     *                     type="number"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="airline",
+     *                     description="Airline in ICAO Code",
+     *                     type="string"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Successful updated flight"),
+     *     @OA\Response(response=401, description="Token is invalid"),
+     *     @OA\Response(response=404, description="Unable to retrieve flight")
+     * )
+     */
     public function update(string $id, FlightRequest $request) {
 
         $user = JWTAuth::parseToken()->authenticate();
