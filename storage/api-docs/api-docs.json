@@ -100,6 +100,26 @@
                 ],
                 "summary": "Get a list of flights created by the user",
                 "operationId": "4baffc280d4c3e239575b8c57e979397",
+                "parameters": [
+                    {
+                        "name": "airline",
+                        "in": "query",
+                        "description": "Airline in ICAO Code",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "airport",
+                        "in": "query",
+                        "description": "Airport in IATA Code",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful operation"

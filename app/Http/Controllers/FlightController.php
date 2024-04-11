@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\FlightRequest;
 use App\Models\Flights;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class FlightController extends Controller
@@ -16,6 +15,24 @@ class FlightController extends Controller
      *     summary="Get a list of flights created by the user",
      *     tags={"Flights"},
      *     security={{"token": {}}},
+     *     @OA\Parameter(
+     *         name="airline",
+     *         description="Airline in ICAO Code",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="airport",
+     *         description="Airport in IATA Code",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      *     @OA\Response(response=200, description="Successful operation"),
      *     @OA\Response(response=401, description="Token is invalid"),
      *     @OA\Response(response=404, description="Unable to retrieve user from database")
