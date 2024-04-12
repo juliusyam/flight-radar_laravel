@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Http\Requests\FlightRequest;
 use App\Models\Flights;
 
 class FlightProvider {
