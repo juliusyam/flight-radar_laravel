@@ -2,10 +2,11 @@
 
 namespace App\Providers;
 
+use App\Http\Requests\FlightRequest;
 use App\Models\Flights;
 
 class FlightProvider {
-    public static function getFlightStats(string $userId): array {
+    public static function getFlightStats(int $userId): array {
 
         $flights = Flights::all()->where('user_id', $userId);
 
@@ -20,5 +21,20 @@ class FlightProvider {
             'top_airports' => array_count_values($airports),
             'top_airlines' => array_count_values(array_column($flights->toArray(), 'airline')),
         ];
+    }
+
+    public static function create(int $userId, array $payload): Flights {
+
+        $flight = new Flights;
+        $flight->departure_date = $payload['departure_date'];
+        $flight->flight_number = $payload['flight_number'];
+        $flight->departure_airport = $payload['departure_airport'];
+        $flight->arrival_airport = $payload['arrival_airport'];
+        $flight->distance = $payload['distance'];
+        $flight->airline = $payload['airline'];
+        $flight->user_id = $userId;
+        $flight->save();
+
+        return $flight;
     }
 }

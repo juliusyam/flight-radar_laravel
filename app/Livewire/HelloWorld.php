@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Http\Requests\FlightRequest;
 use App\Models\Flights;
 use App\Providers\FlightProvider;
 use Illuminate\Support\Facades\Auth;
@@ -11,16 +12,24 @@ use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class HelloWorld extends Component
 {
-    public $email = '';
-    public $password = '';
+    public string $email = '';
+    public string $password = '';
     public $user = null;
+    public string $token = '';
 
-    public $token = '';
+    public int $count = 0;
 
-    public $count = 0;
-
-    public $flights = [];
+    public array $flights = [];
     public $flightStats = null;
+
+    public array $payload = [
+        'departure_date' => '2015-07-01',
+        'flight_number' => 'CX255',
+        'departure_airport' => 'HKG',
+        'arrival_airport' => 'LHR',
+        'distance' => 5991,
+        'airline' => 'CPA',
+    ];
 
     public function login() {
         $token = Auth::attempt([
@@ -39,15 +48,18 @@ class HelloWorld extends Component
 
         $this->user = $user;
 
-        $this->flights = Flights::all()->where('user_id', $user->id);
-
-        Log::info(FlightProvider::getFlightStats($user->id));
+        $this->flights = Flights::all()->where('user_id', $user->id)->toArray();
 
         $this->flightStats = FlightProvider::getFlightStats($user->id);
     }
 
     public function increment() {
         $this->count++;
+
+        $flight = FlightProvider::create($this->user->id, $this->payload);
+
+        // Add single entry to the back of the array
+        $this->flights[] = $flight;
     }
 
     public function decrement() {
@@ -56,7 +68,6 @@ class HelloWorld extends Component
 
     public function render()
     {
-//        $this->flights = Flights::all();
         return view('livewire.hello-world');
     }
 }

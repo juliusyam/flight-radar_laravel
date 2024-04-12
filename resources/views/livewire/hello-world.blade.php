@@ -48,9 +48,9 @@
     <section>
         @foreach ($flights as $flight)
             <div>
-                <h4>Date: {{ $flight->departure_date }}</h4>
-                <h3>Airline: {{ $flight->airline }}</h3>
-                <h4>Journey: {{ $flight->departure_airport }} - {{ $flight->arrival_airport }} </h4>
+                <h4>Date: {{ $flight["departure_date"] }}</h4>
+                <h3>Airline: {{ $flight["airline"] }}</h3>
+                <h4>Journey: {{ $flight["departure_airport"] }} - {{ $flight["arrival_airport"] }} </h4>
                 <br>
             </div>
         @endforeach
