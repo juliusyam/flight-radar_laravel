@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\FlightRequest;
 use App\Models\Flights;
+use App\Providers\FlightProvider;
 use Illuminate\Http\Request;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
@@ -77,19 +78,9 @@ class FlightController extends Controller
 
         $user = JWTAuth::parseToken()->authenticate();
 
-        $flights = Flights::all()->where('user_id', $user->id);
+        $flightStats = FlightProvider::getFlightStats($user->id);
 
-        $airports = array_merge(
-            array_column($flights->toArray(), 'departure_airport'),
-            array_column($flights->toArray(), 'arrival_airport'),
-        );
-
-        return response()->json([
-            'total_flights' => $flights->count(),
-            'total_distance' => array_sum(array_column($flights->toArray(), 'distance')),
-            'top_airports' => array_count_values($airports),
-            'top_airlines' => array_count_values(array_column($flights->toArray(), 'airline')),
-        ]);
+        return response()->json($flightStats);
     }
 
     /**

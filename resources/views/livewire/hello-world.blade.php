@@ -6,7 +6,9 @@
 
         <button type="button" wire:click="login">Login</button>
 
-        <h6>Token: {{ $token }}</h6>
+        @if(!empty($user))
+        <h6>Logged in as: {{ $user->name }}</h6>
+        @endif
     </section>
 
     <br>
@@ -19,6 +21,29 @@
     </section>
 
     <br>
+
+    @if(!empty($flightStats))
+    <section>
+        <h4>Total Flights: {{ $flightStats["total_flights"] }}</h4>
+        <h4>Total Distance: {{ $flightStats["total_distance"] }} miles</h4>
+
+        <h4>Top Airports:</h4>
+        <section>
+            @foreach ($flightStats["top_airports"] as $key => $value)
+                <h4>{{ $key }}: {{ $value }}</h4>
+            @endforeach
+        </section>
+
+        <h4>Top Airlines:</h4>
+        <section>
+            @foreach ($flightStats["top_airlines"] as $key => $value)
+            <h4>{{ $key }}: {{ $value }}</h4>
+            @endforeach
+        </section>
+    </section>
+
+    <br>
+    @endif
 
     <section>
         @foreach ($flights as $flight)
