@@ -1,10 +1,10 @@
 <div>
     <section>
         <h2>Login</h2>
-        <input type="email" wire:model.live="email">
-        <input type="password" wire:model.live="password">
+        <input type="email" wire:model.live="email" class="bg-black">
+        <input type="password" wire:model.live="password" class="bg-black">
 
-        <button type="button" wire:click="login">Login</button>
+        <button type="button" wire:click="login" class="px-2 py-1 rounded-sm bg-teal-400 text-black">Login</button>
 
         @if(!empty($user))
         <h6>Logged in as: {{ $user->name }}</h6>
@@ -44,10 +44,6 @@
 
     <br>
     @endif
-
-
-
-    <br>
 
     @if(!empty($user))
         <livewire:create-flight :flights="$flights" />
