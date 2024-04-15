@@ -54,8 +54,6 @@ class HelloWorld extends Component
         $flight = FlightProvider::create($this->user->id, $payload);
 
         $this->flights[] = $flight;
-
-//        $this->payload = $this->emptyPayload;
     }
 
     public function increment() {
