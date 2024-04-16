@@ -11,6 +11,8 @@ class CreateFlight extends Component
     #[Reactive]
     public array $flights;
 
+    public int | null $selectedFlightId = null;
+
     public string $departure_date = '';
     public string $flight_number = '';
     public string $departure_airport = '';
@@ -40,6 +42,14 @@ class CreateFlight extends Component
         $this->arrival_airport = '';
         $this->distance = 0;
         $this->airline = '';
+    }
+
+    public function selectFlightFromList(int $flightId) {
+        if ($this->selectedFlightId === $flightId) {
+            $this->selectedFlightId = null;
+        } else {
+            $this->selectedFlightId = $flightId;
+        }
     }
 
     public function render()

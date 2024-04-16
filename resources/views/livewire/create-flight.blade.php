@@ -23,12 +23,21 @@
 
     <section>
         @foreach ($flights as $flight)
-        <div>
-            <h4>Date: {{ $flight["departure_date"] }}</h4>
-            <h3>Airline: {{ $flight["airline"] }}</h3>
-            <h4>Journey: {{ $flight["departure_airport"] }} - {{ $flight["arrival_airport"] }} </h4>
-            <br>
+        <div class="flex justify-center items-center gap-2">
+            <section>
+                @if($flight["id"] === $selectedFlightId)
+                <h2>Selected</h2>
+                @endif
+                <h4>Date: {{ $flight["departure_date"] }}</h4>
+                <h3>Airline: {{ $flight["airline"] }}</h3>
+                <h4>Journey: {{ $flight["departure_airport"] }} - {{ $flight["arrival_airport"] }} </h4>
+            </section>
+            <section>
+                <button wire:click="selectFlightFromList('{{ $flight['id'] }}')">Select</button>
+            </section>
         </div>
+
+        <br>
         @endforeach
     </section>
 </div>
