@@ -24,10 +24,7 @@
     <section>
         @foreach ($flights as $flight)
         <div class="flex justify-center items-center gap-2">
-            <section>
-                @if($flight["id"] === $selectedFlightId)
-                <h2>Selected</h2>
-                @endif
+            <section @class(['border-2 border-white' => $flight["id"] === $selectedFlightId])>
                 <h4>Date: {{ $flight["departure_date"] }}</h4>
                 <h3>Airline: {{ $flight["airline"] }}</h3>
                 <h4>Journey: {{ $flight["departure_airport"] }} - {{ $flight["arrival_airport"] }} </h4>
