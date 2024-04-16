@@ -30,7 +30,7 @@
                 <h4>Journey: {{ $flight["departure_airport"] }} - {{ $flight["arrival_airport"] }} </h4>
             </section>
             <section>
-                <button wire:click="selectFlightFromList('{{ $flight['id'] }}')">Select</button>
+                <button wire:click="selectFlightFromList({{ collect($flight) }})">Select</button>
             </section>
         </div>
 

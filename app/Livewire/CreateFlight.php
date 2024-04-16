@@ -36,20 +36,32 @@ class CreateFlight extends Component
             'airline' => $this->airline,
         ]);
 
+        $this->resetForm();
+    }
+
+    public function selectFlightFromList(array $flight) {
+
+        if ($this->selectedFlightId === $flight["id"]) {
+            $this->selectedFlightId = null;
+            $this->resetForm();
+        } else {
+            $this->selectedFlightId = $flight["id"];
+            $this->departure_date = $flight["departure_date"];
+            $this->flight_number = $flight["flight_number"];
+            $this->departure_airport = $flight["departure_airport"];
+            $this->arrival_airport = $flight["arrival_airport"];
+            $this->distance = $flight["distance"];
+            $this->airline = $flight["airline"];
+        }
+    }
+
+    public function resetForm() {
         $this->departure_date = '';
         $this->flight_number = '';
         $this->departure_airport = '';
         $this->arrival_airport = '';
         $this->distance = 0;
         $this->airline = '';
-    }
-
-    public function selectFlightFromList(int $flightId) {
-        if ($this->selectedFlightId === $flightId) {
-            $this->selectedFlightId = null;
-        } else {
-            $this->selectedFlightId = $flightId;
-        }
     }
 
     public function render()
