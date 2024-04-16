@@ -53,6 +53,8 @@ class HelloWorld extends Component
 
         $flight = FlightProvider::create($this->user->id, $payload);
 
+        LOg::debug($flight);
+
         $this->flights[] = $flight;
     }
 
@@ -62,9 +64,12 @@ class HelloWorld extends Component
             return;
         }
 
+        $index = array_search($flightId, array_column($this->flights, 'id'));
+
         $flight = FlightProvider::update($flightId, $payload);
 
-        $this->flights[] = $flight;
+        // TODO: Breaking, fix issue
+//        array_splice($this->flights, $index, 1, $flight);
     }
 
     public function increment() {
