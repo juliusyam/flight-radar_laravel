@@ -15,8 +15,12 @@
             <span>Airline (ICAO):</span>
             <input type="text" wire:model.live="airline" class="bg-black">
         </section>
-
+        @if($selectedFlightId !== null)
+        <button type="button" wire:click="editFlight" class="p-4 rounded-sm bg-teal-400">Edit Flight</button>
+        @else
         <button type="button" wire:click="addFlight" class="p-4 rounded-sm bg-teal-400">Add Flight</button>
+        @endif
+
     </section>
 
     <br>

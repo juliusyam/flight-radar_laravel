@@ -56,6 +56,17 @@ class HelloWorld extends Component
         $this->flights[] = $flight;
     }
 
+    #[On('edit-flight')]
+    public function editFlight(int $flightId, array $payload) {
+        if (empty($this->user)) {
+            return;
+        }
+
+        $flight = FlightProvider::update($flightId, $payload);
+
+        $this->flights[] = $flight;
+    }
+
     public function increment() {
         $this->count++;
     }

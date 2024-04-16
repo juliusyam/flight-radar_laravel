@@ -39,6 +39,22 @@ class CreateFlight extends Component
         $this->resetForm();
     }
 
+    public function editFlight() {
+        $this->validate();
+
+        $this->dispatch('edit-flight', flightId: $this->selectedFlightId, payload: [
+            'departure_date' => $this->departure_date,
+            'flight_number' => $this->flight_number,
+            'departure_airport' => $this->departure_airport,
+            'arrival_airport' => $this->arrival_airport,
+            'distance' =>$this->distance,
+            'airline' => $this->airline,
+        ]);
+
+        $this->selectedFlightId = null;
+        $this->resetForm();
+    }
+
     public function selectFlightFromList(array $flight) {
 
         if ($this->selectedFlightId === $flight["id"]) {

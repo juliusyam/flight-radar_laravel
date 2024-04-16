@@ -36,4 +36,19 @@ class FlightProvider {
 
         return $flight;
     }
+
+    public static function update(int $flightId, array $payload): Flights {
+
+        $flight = Flights::find($flightId);
+
+        $flight->departure_date = $payload['departure_date'];
+        $flight->flight_number = $payload['flight_number'];
+        $flight->departure_airport = $payload['departure_airport'];
+        $flight->arrival_airport = $payload['arrival_airport'];
+        $flight->distance = $payload['distance'];
+        $flight->airline = $payload['airline'];
+        $flight->save();
+
+        return $flight;
+    }
 }

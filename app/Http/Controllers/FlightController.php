@@ -250,13 +250,15 @@ class FlightController extends Controller
         $flight = Flights::find($id);
 
         if (!empty($flight) && $flight->user_id === $user->id) {
-            $flight->departure_date = $request->departure_date;
-            $flight->flight_number = $request->flight_number;
-            $flight->departure_airport = $request->departure_airport;
-            $flight->arrival_airport = $request->arrival_airport;
-            $flight->distance = $request->distance;
-            $flight->airline = $request->airline;
-            $flight->save();
+            $flight = FlightProvider::update($id, [
+                'departure_date' => $request->departure_date,
+                'flight_number' => $request->flight_number,
+                'departure_airport' => $request->departure_airport,
+                'arrival_airport' => $request->arrival_airport,
+                'distance' => $request->distance,
+                'airline' => $request->airline,
+                'user_id' => $user->id,
+            ]);
 
             return response()->json($flight);
         } else {
