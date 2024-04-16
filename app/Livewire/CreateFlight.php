@@ -55,6 +55,10 @@ class CreateFlight extends Component
         $this->resetForm();
     }
 
+    public function deleteFlight(int $flightId) {
+        $this->dispatch('delete-flight', flightId: $flightId);
+    }
+
     public function selectFlightFromList(array $flight) {
 
         if ($this->selectedFlightId === $flight["id"]) {

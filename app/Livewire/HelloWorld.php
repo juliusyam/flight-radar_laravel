@@ -64,12 +64,32 @@ class HelloWorld extends Component
             return;
         }
 
-        $index = array_search($flightId, array_column($this->flights, 'id'));
+//        $index = array_search($flightId, array_column($this->flights, 'id'));
 
         $flight = FlightProvider::update($flightId, $payload);
 
         // TODO: Breaking, fix issue
 //        array_splice($this->flights, $index, 1, $flight);
+
+        // TODO: To Remove, temporary implementation to re fetch dat on edit
+        $this->flights = Flights::all()->where('user_id', $this->user->id)->toArray();
+    }
+
+    #[On('delete-flight')]
+    public function deleteFlight(int $flightId) {
+        if (empty($this->user)) {
+            return;
+        }
+
+        $flight = Flights::find($flightId);
+
+        $index = array_search($flightId, array_column($this->flights, 'id'));
+
+        if (!empty($flight)) {
+            $flight->delete();
+
+            array_splice($this->flights, $index, 1);
+        }
     }
 
     public function increment() {

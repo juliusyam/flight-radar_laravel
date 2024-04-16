@@ -35,6 +35,7 @@
             </section>
             <section>
                 <button wire:click="selectFlightFromList({{ collect($flight) }})">Select</button>
+                <button wire:click="deleteFlight({{ $flight["id"] }})">Delete</button>
             </section>
         </div>
 
