@@ -363,6 +363,206 @@
                     }
                 ]
             }
+        },
+        "/api/notes": {
+            "get": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Get all notes from sepcific user",
+                "operationId": "5ec0b2572bbd82822d5666009711b661",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Token is invalid"
+                    },
+                    "404": {
+                        "description": "Unable to retrieve note"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Create a new note",
+                "operationId": "3baf80917752897f241be3a65751c510",
+                "requestBody": {
+                    "description": "Notes payload format",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "description": "Title of Note",
+                                        "type": "string"
+                                    },
+                                    "body": {
+                                        "description": "Write the note",
+                                        "type": "string"
+                                    },
+                                    "flight_id": {
+                                        "description": "Flight id",
+                                        "type": "number"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful created note"
+                    },
+                    "401": {
+                        "description": "Token is invalid"
+                    },
+                    "404": {
+                        "description": "Unable to retrieve note"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/api/notes/{id}": {
+            "get": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Get a sepcific note",
+                "operationId": "9b7eded99ae8449756cd089aa71078fc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Flight ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Token is invalid"
+                    },
+                    "404": {
+                        "description": "Unable to retrieve note"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Update an existing note",
+                "operationId": "c7e6224fadd6d82b81ded7615279a15c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Note ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Notes payload format",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "description": "Title of Note",
+                                        "type": "string"
+                                    },
+                                    "body": {
+                                        "description": "Write the note",
+                                        "type": "string"
+                                    },
+                                    "flight_id": {
+                                        "description": "Flight id",
+                                        "type": "number"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully updated note"
+                    },
+                    "401": {
+                        "description": "Token is invalid"
+                    },
+                    "404": {
+                        "description": "Unable to retrieve note"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Notes"
+                ],
+                "summary": "Delete a specific note from user's list of notes",
+                "operationId": "231822d83675b5b9446d8b0f6f4d3959",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Note ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successfully deleted note"
+                    },
+                    "401": {
+                        "description": "Token is invalid"
+                    },
+                    "404": {
+                        "description": "Unable to retrieve note"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -382,6 +582,10 @@
         {
             "name": "Flights",
             "description": "Flights related operations"
+        },
+        {
+            "name": "Notes",
+            "description": "Notes related operations"
         }
     ]
 }

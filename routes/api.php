@@ -2,8 +2,11 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FlightController;
+use App\Http\Controllers\NoteController;
 use App\Http\Middleware\EnsureTokenIsValid;
+use App\Models\Notes;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -15,4 +18,10 @@ Route::middleware([EnsureTokenIsValid::class])->group(function () {
     Route::post('/flights', [FlightController::class, 'create']);
     Route::put('/flights/{id}', [FlightController::class, 'update']);
     Route::delete('/flights/{id}', [FlightController::class, 'delete']);
+
+    Route::get('/notes', [NoteController::class, 'index']);
+    Route::get('/notes/{id}', [NoteController::class, 'get']);
+    Route::post('/notes', [NoteController::class, 'create']);
+    Route::put('/notes/{id}', [NoteController::class, 'update']);
+    Route::delete('/notes/{id}', [NoteController::class, 'delete']);
 });

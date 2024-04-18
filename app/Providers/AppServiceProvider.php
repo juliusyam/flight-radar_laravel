@@ -32,6 +32,10 @@ class AppServiceProvider extends ServiceProvider
  *     name="Flights",
  *     description="Flights related operations"
  * )
+ * @OA\Tag(
+ *     name="Notes",
+ *     description="Notes related operations"
+ * )
  * @OA\Info(
  *     version="1.0",
  *     title="Flight Radar - Laravel",
