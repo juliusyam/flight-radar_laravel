@@ -370,7 +370,18 @@
                     "Notes"
                 ],
                 "summary": "Get all notes from sepcific user",
-                "operationId": "5ec0b2572bbd82822d5666009711b661",
+                "operationId": "9a95bde5931986ad60b9f7f414ec425e",
+                "parameters": [
+                    {
+                        "name": "flight id",
+                        "in": "query",
+                        "description": "Flight ID for note",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful operation"
@@ -393,7 +404,7 @@
                     "Notes"
                 ],
                 "summary": "Create a new note",
-                "operationId": "3baf80917752897f241be3a65751c510",
+                "operationId": "e28ffd9dcbbcb4e1b04a525ab9c13a01",
                 "requestBody": {
                     "description": "Notes payload format",
                     "content": {

@@ -15,17 +15,33 @@ class NoteController extends Controller
    *    summary="Get all notes from sepcific user",
    *    tags={"Notes"},
    *    security={{"token": {}}},
+   *    @OA\Parameter(
+   *         name="flight id",
+   *         description="Flight ID for note",
+   *         in="query",
+   *         required=false,
+   *         @OA\Schema(
+   *             type="number"
+   *         )
+   *    ),
    *    @OA\Response(response=200, description="Successful operation"),
    *    @OA\Response(response=401, description="Token is invalid"),
    *    @OA\Response(response=404, description="Unable to retrieve note")
    * )
   */
-  public function index() {
+  public function index(Request $request) {
 
       $user = JWTAuth::parseToken()->authenticate();
 
-      $notes = Notes::all();
-      return response()->json($notes, 200);
+      $notes = Notes::where('user_id', $user->id)->get();
+
+      $flight_id = $request->query('flight_id');
+
+      if ($flight_id) {
+        $notes = $notes->where('flight_id', '=', $flight_id);
+      }
+
+      return array_merge($notes->toArray());
   }
 
   /**
