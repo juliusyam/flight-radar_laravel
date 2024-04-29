@@ -458,7 +458,7 @@
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Flight ID",
+                        "description": "Note ID",
                         "required": true,
                         "schema": {
                             "type": "integer"

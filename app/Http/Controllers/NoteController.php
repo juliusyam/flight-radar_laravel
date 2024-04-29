@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use App\Models\Notes;
+use App\Models\Flights;
 use App\Http\Requests\NoteRequest;
 
 class NoteController extends Controller
@@ -52,7 +53,7 @@ class NoteController extends Controller
    *    security={{"token": {}}},
    *    @OA\Parameter(
    *         name="id",
-   *         description="Flight ID",
+   *         description="Note ID",
    *         in="path",
    *         required=true,
    *         @OA\Schema(
@@ -118,6 +119,14 @@ class NoteController extends Controller
   public function create(NoteRequest $request) {
 
       $user = JWTAuth::parseToken()->authenticate();
+
+      $flight = Flights::find($request->flight_id);
+
+      if (empty($flight) or $flight->user_id !== $user->id) {
+        return response()->json([
+          'message' => 'Forbidden from accessing this flight'
+        ], 403);
+      }
   
       $note = Notes::create([
           'title' => $request->title,
@@ -179,17 +188,25 @@ class NoteController extends Controller
   
       $note = Notes::find($id);
 
-      if (!empty($note) && $note->user_id === $user->id) {
-        $note->title = $request->title;
-        $note->body = $request->body;
-        $note->flight_id = $request->flight_id;
-        $note->save();
-      } else {
+      if (empty($note) or $note->user_id !== $user->id) {
         return response()->json([
           'message' => 'Note not found'
         ], 404);
       }
-  
+
+      $flight = Flights::find($request->flight_id);
+
+      if (empty($flight) or $flight->user_id != $user->id) {
+        return response()->json([
+          'message' => 'Forbidden from accessing this flight'
+        ], 403);
+      }
+
+      $note->title = $request->title;
+      $note->body = $request->body;
+      $note->flight_id = $request->flight_id;
+      $note->save();
+    
       return response()->json($note, 200);
   }
 
