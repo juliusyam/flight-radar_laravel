@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewFlightAdded;
 use App\Http\Requests\FlightRequest;
+use App\Jobs\ProcessNewFlight;
+use App\Jobs\ProcessUpdatedFlight;
+use App\Jobs\ProcessDeletedFlight;
 use App\Models\Flights;
 use App\Providers\FlightProvider;
 use Illuminate\Http\Request;
@@ -181,6 +185,10 @@ class FlightController extends Controller
             'airline' => $request->airline,
             'user_id' => $user->id,
         ]);
+
+        // Dispatch the job with selected data
+        ProcessNewFlight::dispatch($flight);
+
         return response()->json($flight, 201);
     }
 
@@ -260,6 +268,8 @@ class FlightController extends Controller
                 'user_id' => $user->id,
             ]);
 
+            ProcessUpdatedFlight::dispatch($flight);
+
             return response()->json($flight);
         } else {
             return response()->json([
@@ -293,9 +303,23 @@ class FlightController extends Controller
         $user = JWTAuth::parseToken()->authenticate();
 
         $flight = Flights::find($id);
-
+        
+        // TODO find away to clone $flight instead of creating a new array
         if (!empty($flight) && $flight->user_id === $user->id) {
+            $flightData = [
+              'id' => $flight->id,
+              'departure_date' => $flight->departure_date,
+              'flight_number' => $flight->flight_number,
+              'departure_airport' => $flight->departure_airport,
+              'arrival_airport' => $flight->arrival_airport,
+              'distance' => $flight->distance,
+              'airline' => $flight->airline,
+              'user_id' => $user->id,
+            ];
+
             $flight->delete();
+
+            ProcessDeletedFlight::dispatch($flightData);
 
             return response()->json([], 204);
         } else {

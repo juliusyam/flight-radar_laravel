@@ -53,8 +53,6 @@ class HelloWorld extends Component
 
         $flight = FlightProvider::create($this->user->id, $payload);
 
-        LOg::debug($flight);
-
         $this->flights[] = $flight;
     }
 
