@@ -1,13 +1,8 @@
 <div>
     <section>
-        <h2>Login</h2>
-        <input type="email" wire:model.live="email" class="bg-white text-black">
-        <input type="password" wire:model.live="password" class="bg-white text-black">
-
-        <button type="button" wire:click="login" class="px-2 py-1 rounded-sm bg-teal-400 text-black">Login</button>
-
         @if(!empty($user))
-        <h6>Logged in as: {{ $user->name }}</h6>
+            <h6>Logged in as: {{ $user->name }}</h6>
+            <button type="button" wire:click="logout" class="px-2 py-1 rounded-sm bg-teal-400 text-black">Logout</button>
         @endif
     </section>
 
