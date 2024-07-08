@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Models\Flights;
+use App\Models\Flight;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;

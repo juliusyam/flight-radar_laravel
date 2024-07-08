@@ -96,7 +96,7 @@
         "/api/flights": {
             "get": {
                 "tags": [
-                    "Flights"
+                    "Flight"
                 ],
                 "summary": "Get a list of flights created by the user",
                 "operationId": "4baffc280d4c3e239575b8c57e979397",
@@ -139,7 +139,7 @@
             },
             "post": {
                 "tags": [
-                    "Flights"
+                    "Flight"
                 ],
                 "summary": "Create a new flight",
                 "operationId": "c34d49c92e19085907c2b95d755a93f6",
@@ -201,7 +201,7 @@
         "/api/flight-stats": {
             "get": {
                 "tags": [
-                    "Flights"
+                    "Flight"
                 ],
                 "summary": "Get an abundance of flight stats from user's flight history",
                 "operationId": "0eb3b95a664cd8792dfaa9b2cd796916",
@@ -226,7 +226,7 @@
         "/api/flights/{id}": {
             "get": {
                 "tags": [
-                    "Flights"
+                    "Flight"
                 ],
                 "summary": "Get a specific flight",
                 "operationId": "68077cee376d99dd1f625e4b5c0236b5",
@@ -260,7 +260,7 @@
             },
             "put": {
                 "tags": [
-                    "Flights"
+                    "Flight"
                 ],
                 "summary": "Update an existing flight",
                 "operationId": "29d9b985eff7a7d40f56bd4a377854c9",
@@ -331,7 +331,7 @@
             },
             "delete": {
                 "tags": [
-                    "Flights"
+                    "Flight"
                 ],
                 "summary": "Delete a specific flight from user's flight list",
                 "operationId": "59fd658ea7800ce51bbc12bb83c73c79",
@@ -364,21 +364,21 @@
                 ]
             }
         },
-        "/api/notes": {
+        "/api/flights/{id}/notes": {
             "get": {
                 "tags": [
-                    "Notes"
+                    "Note"
                 ],
-                "summary": "Get all notes from sepcific user",
-                "operationId": "9a95bde5931986ad60b9f7f414ec425e",
+                "summary": "Get all notes from sepcific a specific flight",
+                "operationId": "66469e988eafcae3280ba0c479cde490",
                 "parameters": [
                     {
-                        "name": "flight id",
-                        "in": "query",
-                        "description": "Flight ID for note",
-                        "required": false,
+                        "name": "id",
+                        "in": "path",
+                        "description": "Flight ID",
+                        "required": true,
                         "schema": {
-                            "type": "number"
+                            "type": "integer"
                         }
                     }
                 ],
@@ -390,54 +390,7 @@
                         "description": "Token is invalid"
                     },
                     "404": {
-                        "description": "Unable to retrieve note"
-                    }
-                },
-                "security": [
-                    {
-                        "token": []
-                    }
-                ]
-            },
-            "post": {
-                "tags": [
-                    "Notes"
-                ],
-                "summary": "Create a new note",
-                "operationId": "e28ffd9dcbbcb4e1b04a525ab9c13a01",
-                "requestBody": {
-                    "description": "Notes payload format",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "title": {
-                                        "description": "Title of Note",
-                                        "type": "string"
-                                    },
-                                    "body": {
-                                        "description": "Write the note",
-                                        "type": "string"
-                                    },
-                                    "flight_id": {
-                                        "description": "Flight id",
-                                        "type": "number"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Successful created note"
-                    },
-                    "401": {
-                        "description": "Token is invalid"
-                    },
-                    "404": {
-                        "description": "Unable to retrieve note"
+                        "description": "Unable to retrieve notes"
                     }
                 },
                 "security": [
@@ -450,7 +403,7 @@
         "/api/notes/{id}": {
             "get": {
                 "tags": [
-                    "Notes"
+                    "Note"
                 ],
                 "summary": "Get a sepcific note",
                 "operationId": "9b7eded99ae8449756cd089aa71078fc",
@@ -484,7 +437,7 @@
             },
             "put": {
                 "tags": [
-                    "Notes"
+                    "Note"
                 ],
                 "summary": "Update an existing note",
                 "operationId": "c7e6224fadd6d82b81ded7615279a15c",
@@ -500,7 +453,7 @@
                     }
                 ],
                 "requestBody": {
-                    "description": "Notes payload format",
+                    "description": "Note payload format",
                     "content": {
                         "application/json": {
                             "schema": {
@@ -542,7 +495,7 @@
             },
             "delete": {
                 "tags": [
-                    "Notes"
+                    "Note"
                 ],
                 "summary": "Delete a specific note from user's list of notes",
                 "operationId": "231822d83675b5b9446d8b0f6f4d3959",
@@ -574,6 +527,55 @@
                     }
                 ]
             }
+        },
+        "/api/notes": {
+            "post": {
+                "tags": [
+                    "Note"
+                ],
+                "summary": "Create a new note",
+                "operationId": "e28ffd9dcbbcb4e1b04a525ab9c13a01",
+                "requestBody": {
+                    "description": "Note payload format",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "description": "Title of Note",
+                                        "type": "string"
+                                    },
+                                    "body": {
+                                        "description": "Write the note",
+                                        "type": "string"
+                                    },
+                                    "flight_id": {
+                                        "description": "Flight id",
+                                        "type": "number"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful created note"
+                    },
+                    "401": {
+                        "description": "Token is invalid"
+                    },
+                    "404": {
+                        "description": "Unable to retrieve note"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -591,12 +593,12 @@
             "description": "Authentication related operations"
         },
         {
-            "name": "Flights",
-            "description": "Flights related operations"
+            "name": "Flight",
+            "description": "Flight related operations"
         },
         {
-            "name": "Notes",
-            "description": "Notes related operations"
+            "name": "Note",
+            "description": "Note related operations"
         }
     ]
 }

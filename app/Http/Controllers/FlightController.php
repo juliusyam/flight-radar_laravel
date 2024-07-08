@@ -7,7 +7,7 @@ use App\Http\Requests\FlightRequest;
 use App\Jobs\ProcessNewFlight;
 use App\Jobs\ProcessUpdatedFlight;
 use App\Jobs\ProcessDeletedFlight;
-use App\Models\Flights;
+use App\Models\Flight;
 use App\Providers\FlightProvider;
 use Illuminate\Http\Request;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
@@ -18,7 +18,7 @@ class FlightController extends Controller
      * @OA\Get(
      *     path="/api/flights",
      *     summary="Get a list of flights created by the user",
-     *     tags={"Flights"},
+     *     tags={"Flight"},
      *     security={{"token": {}}},
      *     @OA\Parameter(
      *         name="airline",
@@ -47,7 +47,7 @@ class FlightController extends Controller
 
         $user = JWTAuth::parseToken()->authenticate();
 
-        $flights = Flights::all()->where('user_id', $user->id);
+        $flights = Flight::all()->where('user_id', $user->id);
 
         $airline = $request->query('airline');
 
@@ -71,7 +71,7 @@ class FlightController extends Controller
      * @OA\Get(
      *     path="/api/flight-stats",
      *     summary="Get an abundance of flight stats from user's flight history",
-     *     tags={"Flights"},
+     *     tags={"Flight"},
      *     security={{"token": {}}},
      *     @OA\Response(response=200, description="Successful operation"),
      *     @OA\Response(response=401, description="Token is invalid"),
@@ -91,7 +91,7 @@ class FlightController extends Controller
      * @OA\Get(
      *     path="/api/flights/{id}",
      *     summary="Get a specific flight",
-     *     tags={"Flights"},
+     *     tags={"Flight"},
      *     security={{"token": {}}},
      *     @OA\Parameter(
      *         name="id",
@@ -111,7 +111,7 @@ class FlightController extends Controller
 
         $user = JWTAuth::parseToken()->authenticate();
 
-        $flight = Flights::find($id);
+        $flight = Flight::find($id);
 
         if (!empty($flight) && $flight->user_id === $user->id) {
             return response()->json($flight);
@@ -126,7 +126,7 @@ class FlightController extends Controller
      * @OA\Post(
      *     path="/api/flights",
      *     summary="Create a new flight",
-     *     tags={"Flights"},
+     *     tags={"Flight"},
      *     security={{"token": {}}},
      *     @OA\RequestBody(
      *         description="Flight payload format",
@@ -196,7 +196,7 @@ class FlightController extends Controller
      * @OA\Put(
      *     path="/api/flights/{id}",
      *     summary="Update an existing flight",
-     *     tags={"Flights"},
+     *     tags={"Flight"},
      *     security={{"token": {}}},
      *     @OA\Parameter(
      *         name="id",
@@ -255,7 +255,7 @@ class FlightController extends Controller
 
         $user = JWTAuth::parseToken()->authenticate();
 
-        $flight = Flights::find($id);
+        $flight = Flight::find($id);
 
         if (!empty($flight) && $flight->user_id === $user->id) {
             $flight = FlightProvider::update($id, [
@@ -282,7 +282,7 @@ class FlightController extends Controller
      * @OA\Delete(
      *     path="/api/flights/{id}",
      *     summary="Delete a specific flight from user's flight list",
-     *     tags={"Flights"},
+     *     tags={"Flight"},
      *     security={{"token": {}}},
      *     @OA\Parameter(
      *         name="id",
@@ -302,8 +302,8 @@ class FlightController extends Controller
 
         $user = JWTAuth::parseToken()->authenticate();
 
-        $flight = Flights::find($id);
-        
+        $flight = Flight::find($id);
+
         // TODO find away to clone $flight instead of creating a new array
         if (!empty($flight) && $flight->user_id === $user->id) {
             $flightData = [

@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Models\Flights;
+use App\Models\Flight;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -14,11 +14,11 @@ class FlightUpdated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public Flights $flight;
+    public Flight $flight;
     /**
      * Create a new event instance.
      */
-    public function __construct(Flights $flight)
+    public function __construct(Flight $flight)
     {
       $this->flight = $flight;
     }

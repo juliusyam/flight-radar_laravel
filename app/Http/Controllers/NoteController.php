@@ -2,54 +2,54 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
-use App\Models\Notes;
-use App\Models\Flights;
+use App\Models\Note;
+use App\Models\Flight;
 use App\Http\Requests\NoteRequest;
 
 class NoteController extends Controller
 {
   /**
    * @OA\Get(
-   *    path="/api/notes",
-   *    summary="Get all notes from sepcific user",
-   *    tags={"Notes"},
+   *    path="/api/flights/{id}/notes",
+   *    summary="Get all notes from sepcific a specific flight",
+   *    tags={"Note"},
    *    security={{"token": {}}},
    *    @OA\Parameter(
-   *         name="flight id",
-   *         description="Flight ID for note",
-   *         in="query",
-   *         required=false,
-   *         @OA\Schema(
-   *             type="number"
-   *         )
+   *        name="id",
+   *        description="Flight ID",
+   *        in="path",
+   *        required=true,
+   *        @OA\Schema(
+   *            type="integer"
+   *        )
    *    ),
    *    @OA\Response(response=200, description="Successful operation"),
    *    @OA\Response(response=401, description="Token is invalid"),
-   *    @OA\Response(response=404, description="Unable to retrieve note")
+   *    @OA\Response(response=404, description="Unable to retrieve notes")
    * )
   */
-  public function index(Request $request) {
+  public function index(string $flightId) {
 
       $user = JWTAuth::parseToken()->authenticate();
 
-      $notes = Notes::where('user_id', $user->id)->get();
+      $flight = Flight::find($flightId);
 
-      $flight_id = $request->query('flight_id');
-
-      if ($flight_id) {
-        $notes = $notes->where('flight_id', '=', $flight_id);
+      if (!empty($flight) && $flight->user_id === $user->id) {
+          return response()->json($flight->notes);
+      } else {
+          return response()->json([
+              'message' => 'Flight not found',
+          ], 404);
       }
-
-      return array_merge($notes->toArray());
   }
 
   /**
    * @OA\Get(
    *    path="/api/notes/{id}",
    *    summary="Get a sepcific note",
-   *    tags={"Notes"},
+   *    tags={"Note"},
    *    security={{"token": {}}},
    *    @OA\Parameter(
    *         name="id",
@@ -69,7 +69,7 @@ class NoteController extends Controller
 
       $user = JWTAuth::parseToken()->authenticate();
 
-      $note = Notes::find($id);
+      $note = Note::find($id);
 
       if (!empty($note) && $note->user_id === $user->id) {
         return response()->json(
@@ -85,10 +85,10 @@ class NoteController extends Controller
    * @OA\Post(
    *    path="/api/notes",
    *    summary="Create a new note",
-   *    tags={"Notes"},
+   *    tags={"Note"},
    *    security={{"token": {}}},
    *    @OA\RequestBody(
-   *        description="Notes payload format",
+   *        description="Note payload format",
    *        @OA\MediaType(
    *            mediaType="application/json",
    *            @OA\Schema(
@@ -109,8 +109,8 @@ class NoteController extends Controller
    *                    type="number",
    *                )
    *            )
-   *        )    
-   *    ),    
+   *        )
+   *    ),
    *    @OA\Response(response=201, description="Successful created note"),
    *    @OA\Response(response=401, description="Token is invalid"),
    *    @OA\Response(response=404, description="Unable to retrieve note")
@@ -120,21 +120,21 @@ class NoteController extends Controller
 
       $user = JWTAuth::parseToken()->authenticate();
 
-      $flight = Flights::find($request->flight_id);
+      $flight = Flight::find($request->flight_id);
 
       if (empty($flight) or $flight->user_id !== $user->id) {
         return response()->json([
           'message' => 'Forbidden from accessing this flight'
         ], 403);
       }
-  
-      $note = Notes::create([
+
+      $note = Note::create([
           'title' => $request->title,
           'body' => $request->body,
           'user_id' => $user->id,
           'flight_id' => $request->flight_id
       ]);
-  
+
       return response()->json($note, 201);
   }
 
@@ -142,7 +142,7 @@ class NoteController extends Controller
    * @OA\Put(
    *     path="/api/notes/{id}",
    *     summary="Update an existing note",
-   *     tags={"Notes"},
+   *     tags={"Note"},
    *     security={{"token": {}}},
    *     @OA\Parameter(
    *         name="id",
@@ -154,7 +154,7 @@ class NoteController extends Controller
    *         )
    *     ),
    *     @OA\RequestBody(
-   *         description="Notes payload format",
+   *         description="Note payload format",
    *         @OA\MediaType(
    *            mediaType="application/json",
    *            @OA\Schema(
@@ -185,8 +185,8 @@ class NoteController extends Controller
   public function update(string $id, NoteRequest $request) {
 
       $user = JWTAuth::parseToken()->authenticate();
-  
-      $note = Notes::find($id);
+
+      $note = Note::find($id);
 
       if (empty($note) or $note->user_id !== $user->id) {
         return response()->json([
@@ -194,7 +194,7 @@ class NoteController extends Controller
         ], 404);
       }
 
-      $flight = Flights::find($request->flight_id);
+      $flight = $note->flight;
 
       if (empty($flight) or $flight->user_id != $user->id) {
         return response()->json([
@@ -206,7 +206,7 @@ class NoteController extends Controller
       $note->body = $request->body;
       $note->flight_id = $request->flight_id;
       $note->save();
-    
+
       return response()->json($note, 200);
   }
 
@@ -214,7 +214,7 @@ class NoteController extends Controller
    * @OA\Delete(
    *     path="/api/notes/{id}",
    *     summary="Delete a specific note from user's list of notes",
-   *     tags={"Notes"},
+   *     tags={"Note"},
    *     security={{"token": {}}},
    *     @OA\Parameter(
    *         name="id",
@@ -231,10 +231,10 @@ class NoteController extends Controller
    * )
   */
   public function delete(string $id) {
-      
+
       $user = JWTAuth::parseToken()->authenticate();
-  
-      $note = Notes::find($id);
+
+      $note = Note::find($id);
 
       if (!empty($note) && $note->user_id === $user->id) {
         $note->delete();
@@ -243,7 +243,7 @@ class NoteController extends Controller
           'message' => 'Note not found'
         ], 404);
       }
-  
+
       return response()->json([], 204);
   }
 }

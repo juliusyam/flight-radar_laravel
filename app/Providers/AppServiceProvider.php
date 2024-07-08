@@ -32,12 +32,12 @@ class AppServiceProvider extends ServiceProvider
  *     description="Authentication related operations"
  * )
  * @OA\Tag(
- *     name="Flights",
- *     description="Flights related operations"
+ *     name="Flight",
+ *     description="Flight related operations"
  * )
  * @OA\Tag(
- *     name="Notes",
- *     description="Notes related operations"
+ *     name="Note",
+ *     description="Note related operations"
  * )
  * @OA\Info(
  *     version="1.0",

@@ -2,12 +2,12 @@
 
 namespace App\Providers;
 
-use App\Models\Flights;
+use App\Models\Flight;
 
 class FlightProvider {
     public static function getFlightStats(int $userId): array {
 
-        $flights = Flights::all()->where('user_id', $userId);
+        $flights = Flight::all()->where('user_id', $userId);
 
         $airports = array_merge(
             array_column($flights->toArray(), 'departure_airport'),
@@ -22,9 +22,9 @@ class FlightProvider {
         ];
     }
 
-    public static function create(int $userId, array $payload): Flights {
+    public static function create(int $userId, array $payload): Flight {
 
-        $flight = new Flights;
+        $flight = new Flight;
         $flight->departure_date = $payload['departure_date'];
         $flight->flight_number = $payload['flight_number'];
         $flight->departure_airport = $payload['departure_airport'];
@@ -37,9 +37,9 @@ class FlightProvider {
         return $flight;
     }
 
-    public static function update(int $flightId, array $payload): Flights {
+    public static function update(int $flightId, array $payload): Flight {
 
-        $flight = Flights::find($flightId);
+        $flight = Flight::find($flightId);
 
         $flight->departure_date = $payload['departure_date'];
         $flight->flight_number = $payload['flight_number'];

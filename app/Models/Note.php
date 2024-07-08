@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Notes extends Model
+class Note extends Model
 {
     use HasFactory;
 
@@ -15,4 +16,9 @@ class Notes extends Model
       'user_id',
       'flight_id',
     ];
+
+    public function flight(): BelongsTo
+    {
+        return $this->belongsTo(Flight::class);
+    }
 }

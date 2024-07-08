@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Events\FlightDeleted;
-use App\Models\Flights;
+use App\Models\Flight;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;

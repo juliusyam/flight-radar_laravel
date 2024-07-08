@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Events\FlightUpdated;
-use App\Models\Flights;
+use App\Models\Flight;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -14,11 +14,11 @@ class ProcessUpdatedFlight implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public Flights $flight;
+    public Flight $flight;
     /**
      * Create a new job instance.
      */
-    public function __construct(Flights $flight)
+    public function __construct(Flight $flight)
     {
       $this->flight = $flight;
     }

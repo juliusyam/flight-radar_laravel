@@ -2,7 +2,7 @@
 
 namespace App\Livewire;
 
-use App\Models\Flights;
+use App\Models\Flight;
 use App\Providers\FlightProvider;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -40,7 +40,7 @@ class HelloWorld extends Component
 
         $this->user = $user;
 
-        $this->flights = Flights::all()->where('user_id', $user->id)->toArray();
+        $this->flights = Flight::all()->where('user_id', $user->id)->toArray();
 
         $this->flightStats = FlightProvider::getFlightStats($user->id);
     }
@@ -70,7 +70,7 @@ class HelloWorld extends Component
 //        array_splice($this->flights, $index, 1, $flight);
 
         // TODO: To Remove, temporary implementation to re fetch dat on edit
-        $this->flights = Flights::all()->where('user_id', $this->user->id)->toArray();
+        $this->flights = Flight::all()->where('user_id', $this->user->id)->toArray();
     }
 
     #[On('delete-flight')]
@@ -79,7 +79,7 @@ class HelloWorld extends Component
             return;
         }
 
-        $flight = Flights::find($flightId);
+        $flight = Flight::find($flightId);
 
         $index = array_search($flightId, array_column($this->flights, 'id'));
 
