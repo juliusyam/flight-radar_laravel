@@ -7,6 +7,81 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+# Flight Radar - Laravel
+For full documentation click [here](https://laravel.com/docs/11.x).
+
+## How to run this project locally?
+
+### Step 1: Install PHP Composer
+https://getcomposer.org/doc/00-intro.md
+
+This project is developed on PHP version [8.3.7](https://www.php.net/releases/) and Composer version [2.7.2](https://getcomposer.org/download/).
+
+### Step 2: Install Dependencies
+Install dependencies with the following command on the project's root directory.
+
+`composer install`
+
+### Step 3: Setup .env
+Duplicate the `.env.example` file and rename it to `.env`.
+
+### Step 4: Setup Database Connection
+For this example we will be connecting to a local Sqlite Database.
+
+1. Install [DB Browser for Sqlite](https://sqlitebrowser.org/)
+2. Create a database titled `database.sqlite` within the `database` directory of the project, with DB Browser
+
+### Step 5: Generate an Application Key
+Run the following command on the project's root directory. You should see value for `APP_KEY` populated on the `.env` file.
+
+`php artisan key:generate`
+
+### Step 5: Generate a JWT_SECRET key for jwt-auth
+Run the following command on the project's root directory. You should see value for `JWT_SECRET` populated on the `.env` file.
+
+`php artisan jwt:secret`
+
+### Step 6: Migrate the Database
+Run the following command to execute database migration.
+
+`php artisan migrate`
+
+### Step 7: Install Node.js Dependencies to run the Livewire frontend app
+
+`yarn install`
+
+This project is developed on Node version [20.12.1](https://nodejs.org/en) with package manager Yarn version [1.22.19](https://classic.yarnpkg.com/lang/en/docs/cli/version/).
+
+### Step 8: Start the Server
+Start the Laravel server with the following command on the project's root directory.
+
+`php artisan serve`
+
+### Step 9: Start the [Reverb](https://reverb.laravel.com/) WebSocket Server
+Start Reverb on a new terminal with the Laravel Server running, on the project's root directory.
+
+`php artisan reverb:start`
+
+Listen to socket events on a queue on a new terminal with both the Laravel Server and Reverb Server running, on the project's root directory.
+
+`php artisan queue:listen`
+
+### Step 10: Generate and Update the Swagger API Documentation
+Generate an updated Swagger Documentation to call the APIs. 
+
+When changes to API are made, you will need to update the Swagger annotations correspondingly before generating a new documentation with the following command. 
+
+For comprehensive guide, click [here](https://medium.com/@mark.tabletpc/set-up-laravel-with-swagger-for-comprehensive-api-documentation-step-by-step-instructions-d30552ca8051).
+
+`php artisan l5-swagger:generate`
+
+The documentation is hosted on [http://localhost:8000/api/documentation](http://localhost:8000/api/documentation).
+
+### Step 11: Start the Livewire App (Optional)
+Start the Livewire App to interact with the frontend on a web browser, and call the APIs.
+
+`yarn dev`
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
@@ -20,47 +95,3 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 - [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
