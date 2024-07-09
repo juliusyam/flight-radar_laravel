@@ -15,13 +15,15 @@ class ProcessDeletedFlight implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public array $flight;
+    public int $flightId;
+    public int $userId;
     /**
      * Create a new job instance.
      */
-    public function __construct(array $flight)
+    public function __construct(int $userId, int $flightId)
     {
-      $this->flight = $flight;
+        $this->userId = $userId;
+        $this->$flightId = $flightId;
     }
 
     /**
@@ -29,7 +31,6 @@ class ProcessDeletedFlight implements ShouldQueue
      */
     public function handle(): void
     {
-
-      FlightDeleted::dispatch($this->flight);
+        FlightDeleted::dispatch($this->userId, $this->$flightId);
     }
 }

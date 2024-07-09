@@ -1,35 +1,37 @@
 <div>
     <section>
         @if(!empty($user))
-            <h6>Logged in as: {{ $user->name }}</h6>
-            <button type="button" wire:click="logout" class="px-2 py-1 rounded-sm bg-teal-400 text-black">Logout</button>
+            <h6>{{ Lang::get('livewire.message_logged_in', ['name' => $user->name]) }}</h6>
+            <button type="button" wire:click="logout" class="px-2 py-1 rounded-sm bg-teal-400 text-black">
+                {{ Lang::get('livewire.button_logout') }}
+            </button>
         @endif
     </section>
 
     <br>
 
     <section>
-        <h2>Number Updates</h2>
-        <button type="button" wire:click="increment">Increment</button>
-        <button type="button" wire:click="decrement">Decrement</button>
-        <h6>Count: {{ $count }}</h6>
+        <h2>{{ Lang::get('livewire.title_number_updates') }}</h2>
+        <button type="button" wire:click="increment">{{ Lang::get('livewire.button_increment') }}</button>
+        <button type="button" wire:click="decrement">{{ Lang::get('livewire.button_decrement') }}</button>
+        <h6>{{ Lang::get('livewire.indication_count', ['count' => $count]) }}</h6>
     </section>
 
     <br>
 
     @if(!empty($flightStats))
     <section>
-        <h4>Total Flights: {{ $flightStats["total_flights"] }}</h4>
-        <h4>Total Distance: {{ $flightStats["total_distance"] }} miles</h4>
+        <h4>{{ Lang::get('livewire.indication_flights', ['flights' => $flightStats["total_flights"]]) }}</h4>
+        <h4>{{ Lang::get('livewire.indication_distance', ['distance' => $flightStats["total_distance"]]) }}</h4>
 
-        <h4>Top Airports:</h4>
+        <h4>{{ Lang::get('livewire.indication_airports') }}</h4>
         <section>
             @foreach ($flightStats["top_airports"] as $key => $value)
                 <h4>{{ $key }}: {{ $value }}</h4>
             @endforeach
         </section>
 
-        <h4>Top Airlines:</h4>
+        <h4>{{ Lang::get('livewire.indication_airlines') }}</h4>
         <section>
             @foreach ($flightStats["top_airlines"] as $key => $value)
             <h4>{{ $key }}: {{ $value }}</h4>

@@ -14,13 +14,15 @@ class FlightDeleted implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public array $flight;
+    public int $flightId;
+    public int $userId;
     /**
      * Create a new event instance.
      */
-    public function __construct(array $flight)
+    public function __construct(int $userId, int $flightId)
     {
-      $this->flight = $flight;
+        $this->userId = $userId;
+        $this->$flightId = $flightId;
     }
 
     /**
@@ -32,7 +34,7 @@ class FlightDeleted implements ShouldBroadcast
     {
         return [
           new Channel('flights'),
-          new PrivateChannel('flights-private.' . $this->flight['user_id']),
+          new PrivateChannel('flights-private.' . $this->userId),
         ];
     }
 }

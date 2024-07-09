@@ -93,7 +93,7 @@ class AuthController extends Controller
 
         if (!$token) {
             return response()->json([
-                'message' => 'Unable to login, please try again later',
+                'message' => __('auth.failed'),
             ], 401);
         }
 

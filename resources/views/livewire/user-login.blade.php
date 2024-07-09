@@ -3,12 +3,16 @@
 >
     <section class="flex justify-end items-center gap-2">
         @if(!empty($user))
-            <button type="button" wire:click="logout" class="px-2 py-1 rounded-sm bg-teal-400 text-black">Logout</button>
+            <button type="button" wire:click="logout" class="px-2 py-1 rounded-sm bg-teal-400 text-black">
+                {{ Lang::get('livewire.button_logout') }}
+            </button>
         @else
             <input type="email" wire:model.live="email" class="bg-black">
             <input type="password" wire:model.live="password" class="bg-black">
 
-            <button type="button" wire:click="login" class="px-2 py-1 rounded-sm bg-teal-400 text-black">Login</button>
+            <button type="button" wire:click="login" class="px-2 py-1 rounded-sm bg-teal-400 text-black">
+                {{ Lang::get('livewire.button_login') }}
+            </button>
         @endif
     </section>
 </section>

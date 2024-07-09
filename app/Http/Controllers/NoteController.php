@@ -36,13 +36,15 @@ class NoteController extends Controller
 
       $flight = Flight::find($flightId);
 
-      if (!empty($flight) && $flight->user_id === $user->id) {
-          return response()->json($flight->notes);
-      } else {
-          return response()->json([
-              'message' => 'Flight not found',
-          ], 404);
+      if (empty($flight)) {
+          return response()->json(['message' => __('flight.not_found', ['id' => $flightId])], 404);
       }
+
+      if ($flight->user_id !== $user->id) {
+          return response()->json(['message' => __('flight.access_forbidden', ['id' => $flightId])], 403);
+      }
+
+      return response()->json($flight->notes);
   }
 
   /**
@@ -71,14 +73,15 @@ class NoteController extends Controller
 
       $note = Note::find($id);
 
-      if (!empty($note) && $note->user_id === $user->id) {
-        return response()->json(
-          $note, 200);
-      } else {
-          return response()->json([
-              'message' => 'Note not found',
-          ], 404);
+      if (empty($note)) {
+          return response()->json(['message' => __('note.not_found', ['id' => $id])], 404);
       }
+
+      if ($note->user_id !== $user->id) {
+          return response()->json(['message' => __('note.access_forbidden', ['id' => $id])], 403);
+      }
+
+      return response()->json($note);
   }
 
   /**
@@ -122,10 +125,16 @@ class NoteController extends Controller
 
       $flight = Flight::find($request->flight_id);
 
-      if (empty($flight) or $flight->user_id !== $user->id) {
-        return response()->json([
-          'message' => 'Forbidden from accessing this flight'
-        ], 403);
+      if (empty($flight)) {
+          return response()->json([
+              'message' => __('flight.not_found', ['id' => $request->flight_id])
+          ], 404);
+      }
+
+      if ($flight->user_id !== $user->id) {
+          return response()->json([
+              'message' => __('flight.access_forbidden', ['id' => $request->flight_id])
+          ], 403);
       }
 
       $note = Note::create([
@@ -182,32 +191,42 @@ class NoteController extends Controller
    *     @OA\Response(response=404, description="Unable to retrieve note")
    * )
   */
+
+  // TODO: Create NoteEditRequest to omit flight_id
   public function update(string $id, NoteRequest $request) {
 
       $user = JWTAuth::parseToken()->authenticate();
 
       $note = Note::find($id);
 
-      if (empty($note) or $note->user_id !== $user->id) {
-        return response()->json([
-          'message' => 'Note not found'
-        ], 404);
+      if (empty($note)) {
+          return response()->json(['message' => __('note.not_found', ['id' => $id])], 404);
+      }
+
+      if ($note->user_id !== $user->id) {
+          return response()->json(['message' => __('note.access_forbidden', ['id' => $id])], 403);
       }
 
       $flight = $note->flight;
 
-      if (empty($flight) or $flight->user_id != $user->id) {
-        return response()->json([
-          'message' => 'Forbidden from accessing this flight'
-        ], 403);
+      if (empty($flight)) {
+          return response()->json([
+              'message' => __('flight.not_found', ['id' => $note->flight_id])
+          ], 404);
       }
 
+      if ($flight->user_id !== $user->id) {
+          return response()->json([
+              'message' => __('flight.access_forbidden', ['id' => $note->flight_id])
+          ], 403);
+      }
+
+      // TODO: Cannot update flight_id for note, it is permanent
       $note->title = $request->title;
       $note->body = $request->body;
-      $note->flight_id = $request->flight_id;
       $note->save();
 
-      return response()->json($note, 200);
+      return response()->json($note);
   }
 
   /**
@@ -236,13 +255,15 @@ class NoteController extends Controller
 
       $note = Note::find($id);
 
-      if (!empty($note) && $note->user_id === $user->id) {
-        $note->delete();
-      } else {
-        return response()->json([
-          'message' => 'Note not found'
-        ], 404);
+      if (empty($note)) {
+          return response()->json(['message' => __('note.not_found', ['id' => $id])], 404);
       }
+
+      if ($note->user_id !== $user->id) {
+          return response()->json(['message' => __('note.access_forbidden', ['id' => $id])], 403);
+      }
+
+      $note->delete();
 
       return response()->json([], 204);
   }

@@ -113,13 +113,15 @@ class FlightController extends Controller
 
         $flight = Flight::find($id);
 
-        if (!empty($flight) && $flight->user_id === $user->id) {
-            return response()->json($flight);
-        } else {
-            return response()->json([
-                'message' => 'Flight not found',
-            ], 404);
+        if (empty($flight)) {
+            return response()->json(['message' => __('flight.not_found', ['id' => $id])], 404);
         }
+
+        if ($flight->user_id !== $user->id) {
+            return response()->json(['message' => __('flight.access_forbidden', ['id' => $id])], 403);
+        }
+
+        return response()->json($flight);
     }
 
     /**
@@ -257,25 +259,27 @@ class FlightController extends Controller
 
         $flight = Flight::find($id);
 
-        if (!empty($flight) && $flight->user_id === $user->id) {
-            $flight = FlightProvider::update($id, [
-                'departure_date' => $request->departure_date,
-                'flight_number' => $request->flight_number,
-                'departure_airport' => $request->departure_airport,
-                'arrival_airport' => $request->arrival_airport,
-                'distance' => $request->distance,
-                'airline' => $request->airline,
-                'user_id' => $user->id,
-            ]);
-
-            ProcessUpdatedFlight::dispatch($flight);
-
-            return response()->json($flight);
-        } else {
-            return response()->json([
-                'message' => 'Flight not found',
-            ], 404);
+        if (empty($flight)) {
+            return response()->json(['message' => __('flight.not_found', ['id' => $id])], 404);
         }
+
+        if ($flight->user_id !== $user->id) {
+            return response()->json(['message' => __('flight.access_forbidden', ['id' => $id])], 403);
+        }
+
+        $flight = FlightProvider::update($id, [
+            'departure_date' => $request->departure_date,
+            'flight_number' => $request->flight_number,
+            'departure_airport' => $request->departure_airport,
+            'arrival_airport' => $request->arrival_airport,
+            'distance' => $request->distance,
+            'airline' => $request->airline,
+            'user_id' => $user->id,
+        ]);
+
+        ProcessUpdatedFlight::dispatch($flight);
+
+        return response()->json($flight);
     }
 
     /**
@@ -304,28 +308,18 @@ class FlightController extends Controller
 
         $flight = Flight::find($id);
 
-        // TODO find away to clone $flight instead of creating a new array
-        if (!empty($flight) && $flight->user_id === $user->id) {
-            $flightData = [
-              'id' => $flight->id,
-              'departure_date' => $flight->departure_date,
-              'flight_number' => $flight->flight_number,
-              'departure_airport' => $flight->departure_airport,
-              'arrival_airport' => $flight->arrival_airport,
-              'distance' => $flight->distance,
-              'airline' => $flight->airline,
-              'user_id' => $user->id,
-            ];
-
-            $flight->delete();
-
-            ProcessDeletedFlight::dispatch($flightData);
-
-            return response()->json([], 204);
-        } else {
-            return response()->json([
-                'message' => 'Flight not found',
-            ], 404);
+        if (empty($flight)) {
+            return response()->json(['message' => __('flight.not_found', ['id' => $id])], 404);
         }
+
+        if ($flight->user_id !== $user->id) {
+            return response()->json(['message' => __('flight.access_forbidden', ['id' => $id])], 403);
+        }
+
+        $flight->delete();
+
+        ProcessDeletedFlight::dispatch($user->id, $flight->id);
+
+        return response()->json([], 204);
     }
 }

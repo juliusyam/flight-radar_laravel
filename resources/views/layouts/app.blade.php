@@ -23,8 +23,8 @@
                 <header class="grid grid-cols-2 items-center gap-2 py-10 lg:grid-cols-3">
                     @if(session('user'))
                         <nav>
-                            <a href="/dashboard" wire:navigate>Dashboard</a>
-                            <a href="/flights" wire:navigate>Flights</a>
+                            <a href="/dashboard" wire:navigate>{{ Lang::get('livewire.header_dashboard') }}</a>
+                            <a href="/flights" wire:navigate>{{ Lang::get('livewire.header_flights') }}</a>
                         </nav>
                     @endif
 
@@ -39,7 +39,7 @@
 
                     <section class="flex justify-end items-center gap-2">
                         @if(session('user'))
-                            <h6>Logged in as: {{ session('user')->name }}</h6>
+                            <h6>{{ Lang::get('livewire.message_logged_in', ['name' => session('user')->name]) }}</h6>
                         @endif
                     </section>
                 </header>
