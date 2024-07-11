@@ -8,6 +8,7 @@ use App\Jobs\ProcessNewFlight;
 use App\Jobs\ProcessUpdatedFlight;
 use App\Jobs\ProcessDeletedFlight;
 use App\Models\Flight;
+use App\Models\Note;
 use App\Providers\FlightProvider;
 use Illuminate\Http\Request;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
@@ -295,6 +296,8 @@ class FlightController extends Controller
         $flight = FlightController::getAndValidateFlightAccess($id, $user->id);
 
         $flight->delete();
+
+        Note::where('flight_id', $id)->delete();
 
         ProcessDeletedFlight::dispatch($user->id, $flight->id);
 

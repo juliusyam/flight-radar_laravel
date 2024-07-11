@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Log;
+use App\Http\Requests\NoteEditRequest;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use App\Models\Note;
 use App\Models\Flight;
@@ -151,11 +151,6 @@ class NoteController extends Controller
     *                    property="body",
     *                    description="Write the note",
     *                    type="string",
-    *                ),
-    *                @OA\Property(
-    *                    property="flight_id",
-    *                    description="Flight id",
-    *                    type="number",
     *                )
     *            )
     *         )
@@ -166,8 +161,7 @@ class NoteController extends Controller
     * )
     */
 
-    // TODO: Create NoteEditRequest to omit flight_id
-    public function update(int $id, NoteRequest $request) {
+  public function update(int $id, NoteEditRequest $request) {
 
         $user = JWTAuth::parseToken()->authenticate();
 

@@ -490,10 +490,6 @@
                                     "body": {
                                         "description": "Write the note",
                                         "type": "string"
-                                    },
-                                    "flight_id": {
-                                        "description": "Flight id",
-                                        "type": "number"
                                     }
                                 },
                                 "type": "object"
