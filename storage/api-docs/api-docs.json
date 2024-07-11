@@ -93,6 +93,31 @@
                 }
             }
         },
+        "/api/refresh": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Refresh JWT Token",
+                "operationId": "86e894df0ccad042116bf937e5593629",
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved a new valid JWT Token"
+                    },
+                    "400": {
+                        "description": "Token is not provided"
+                    },
+                    "403": {
+                        "description": "JWT Token is invalid, unable to generate new JWT Token"
+                    }
+                },
+                "security": [
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/api/flights": {
             "get": {
                 "tags": [

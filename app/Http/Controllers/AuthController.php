@@ -7,6 +7,11 @@ use App\Http\Requests\LoginRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use PHPOpenSourceSaver\JWTAuth\Exceptions\TokenInvalidException;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class AuthController extends Controller
 {
@@ -92,15 +97,42 @@ class AuthController extends Controller
         $token = Auth::attempt($credentials);
 
         if (!$token) {
-            return response()->json([
-                'message' => __('auth.failed'),
-            ], 401);
+            throw new UnauthorizedHttpException(__('auth.failed'));
         }
 
         $user = Auth::user();
 
         return response()->json([
             'user' => $user,
+            'token' => $token,
+        ]);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/refresh",
+     *     summary="Refresh JWT Token",
+     *     tags={"Authentication"},
+     *     security={{"token": {}}},
+     *     @OA\Response(response=200, description="Successfully retrieved a new valid JWT Token"),
+     *     @OA\Response(response=400, description="Token is not provided"),
+     *     @OA\Response(response=403, description="JWT Token is invalid, unable to generate new JWT Token")
+     * )
+     */
+    public function refresh() {
+        $token = JWTAuth::getToken();
+
+        if (!$token) {
+            throw new BadRequestHttpException(__('auth.token_not_found'));
+        }
+
+        try {
+            $token = JWTAuth::refresh($token);
+        } catch (TokenInvalidException) {
+            throw new AccessDeniedHttpException(__('auth.token_invalid'));
+        }
+
+        return response()->json([
             'token' => $token,
         ]);
     }

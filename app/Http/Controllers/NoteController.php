@@ -7,264 +7,233 @@ use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use App\Models\Note;
 use App\Models\Flight;
 use App\Http\Requests\NoteRequest;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class NoteController extends Controller
 {
-  /**
-   * @OA\Get(
-   *    path="/api/flights/{id}/notes",
-   *    summary="Get all notes from sepcific a specific flight",
-   *    tags={"Note"},
-   *    security={{"token": {}}},
-   *    @OA\Parameter(
-   *        name="id",
-   *        description="Flight ID",
-   *        in="path",
-   *        required=true,
-   *        @OA\Schema(
-   *            type="integer"
-   *        )
-   *    ),
-   *    @OA\Response(response=200, description="Successful operation"),
-   *    @OA\Response(response=401, description="Token is invalid"),
-   *    @OA\Response(response=404, description="Unable to retrieve notes")
-   * )
-  */
-  public function index(string $flightId) {
+    /**
+    * @OA\Get(
+    *    path="/api/flights/{id}/notes",
+    *    summary="Get all notes from sepcific a specific flight",
+    *    tags={"Note"},
+    *    security={{"token": {}}},
+    *    @OA\Parameter(
+    *        name="id",
+    *        description="Flight ID",
+    *        in="path",
+    *        required=true,
+    *        @OA\Schema(
+    *            type="integer"
+    *        )
+    *    ),
+    *    @OA\Response(response=200, description="Successful operation"),
+    *    @OA\Response(response=401, description="Token is invalid"),
+    *    @OA\Response(response=404, description="Unable to retrieve notes")
+    * )
+    */
+    public function index(int $flightId) {
 
-      $user = JWTAuth::parseToken()->authenticate();
+        $user = JWTAuth::parseToken()->authenticate();
 
-      $flight = Flight::find($flightId);
+        $flight = FlightController::getAndValidateFlightAccess($flightId, $user->id);
 
-      if (empty($flight)) {
-          return response()->json(['message' => __('flight.not_found', ['id' => $flightId])], 404);
-      }
+        return response()->json($flight->notes);
+    }
 
-      if ($flight->user_id !== $user->id) {
-          return response()->json(['message' => __('flight.access_forbidden', ['id' => $flightId])], 403);
-      }
+    /**
+    * @OA\Get(
+    *    path="/api/notes/{id}",
+    *    summary="Get a sepcific note",
+    *    tags={"Note"},
+    *    security={{"token": {}}},
+    *    @OA\Parameter(
+    *         name="id",
+    *         description="Note ID",
+    *         in="path",
+    *         required=true,
+    *         @OA\Schema(
+    *             type="integer"
+    *         )
+    *    ),
+    *    @OA\Response(response=200, description="Successful operation"),
+    *    @OA\Response(response=401, description="Token is invalid"),
+    *    @OA\Response(response=404, description="Unable to retrieve note")
+    * )
+    */
+    public function get(int $id) {
 
-      return response()->json($flight->notes);
-  }
+        $user = JWTAuth::parseToken()->authenticate();
 
-  /**
-   * @OA\Get(
-   *    path="/api/notes/{id}",
-   *    summary="Get a sepcific note",
-   *    tags={"Note"},
-   *    security={{"token": {}}},
-   *    @OA\Parameter(
-   *         name="id",
-   *         description="Note ID",
-   *         in="path",
-   *         required=true,
-   *         @OA\Schema(
-   *             type="integer"
-   *         )
-   *    ),
-   *    @OA\Response(response=200, description="Successful operation"),
-   *    @OA\Response(response=401, description="Token is invalid"),
-   *    @OA\Response(response=404, description="Unable to retrieve note")
-   * )
-  */
-  public function get(string $id) {
+        $note = NoteController::getAndValidateNoteAccess($id, $user->id);
 
-      $user = JWTAuth::parseToken()->authenticate();
+        return response()->json($note);
+    }
 
-      $note = Note::find($id);
+    /**
+    * @OA\Post(
+    *    path="/api/notes",
+    *    summary="Create a new note",
+    *    tags={"Note"},
+    *    security={{"token": {}}},
+    *    @OA\RequestBody(
+    *        description="Note payload format",
+    *        @OA\MediaType(
+    *            mediaType="application/json",
+    *            @OA\Schema(
+    *                type="object",
+    *                @OA\Property(
+    *                    property="title",
+    *                    description="Title of Note",
+    *                    type="string",
+    *                ),
+    *                @OA\Property(
+    *                    property="body",
+    *                    description="Write the note",
+    *                    type="string",
+    *                ),
+    *                @OA\Property(
+    *                    property="flight_id",
+    *                    description="Flight id",
+    *                    type="number",
+    *                )
+    *            )
+    *        )
+    *    ),
+    *    @OA\Response(response=201, description="Successful created note"),
+    *    @OA\Response(response=401, description="Token is invalid"),
+    *    @OA\Response(response=404, description="Unable to retrieve note")
+    * )
+    */
+    public function create(NoteRequest $request) {
 
-      if (empty($note)) {
-          return response()->json(['message' => __('note.not_found', ['id' => $id])], 404);
-      }
+        $user = JWTAuth::parseToken()->authenticate();
 
-      if ($note->user_id !== $user->id) {
-          return response()->json(['message' => __('note.access_forbidden', ['id' => $id])], 403);
-      }
+        FlightController::getAndValidateFlightAccess($request->flight_id, $user->id);
 
-      return response()->json($note);
-  }
-
-  /**
-   * @OA\Post(
-   *    path="/api/notes",
-   *    summary="Create a new note",
-   *    tags={"Note"},
-   *    security={{"token": {}}},
-   *    @OA\RequestBody(
-   *        description="Note payload format",
-   *        @OA\MediaType(
-   *            mediaType="application/json",
-   *            @OA\Schema(
-   *                type="object",
-   *                @OA\Property(
-   *                    property="title",
-   *                    description="Title of Note",
-   *                    type="string",
-   *                ),
-   *                @OA\Property(
-   *                    property="body",
-   *                    description="Write the note",
-   *                    type="string",
-   *                ),
-   *                @OA\Property(
-   *                    property="flight_id",
-   *                    description="Flight id",
-   *                    type="number",
-   *                )
-   *            )
-   *        )
-   *    ),
-   *    @OA\Response(response=201, description="Successful created note"),
-   *    @OA\Response(response=401, description="Token is invalid"),
-   *    @OA\Response(response=404, description="Unable to retrieve note")
-   * )
-  */
-  public function create(NoteRequest $request) {
-
-      $user = JWTAuth::parseToken()->authenticate();
-
-      $flight = Flight::find($request->flight_id);
-
-      if (empty($flight)) {
-          return response()->json([
-              'message' => __('flight.not_found', ['id' => $request->flight_id])
-          ], 404);
-      }
-
-      if ($flight->user_id !== $user->id) {
-          return response()->json([
-              'message' => __('flight.access_forbidden', ['id' => $request->flight_id])
-          ], 403);
-      }
-
-      $note = Note::create([
+        $note = Note::create([
           'title' => $request->title,
           'body' => $request->body,
           'user_id' => $user->id,
           'flight_id' => $request->flight_id
-      ]);
+        ]);
 
-      return response()->json($note, 201);
-  }
+        return response()->json($note, 201);
+    }
 
-  /**
-   * @OA\Put(
-   *     path="/api/notes/{id}",
-   *     summary="Update an existing note",
-   *     tags={"Note"},
-   *     security={{"token": {}}},
-   *     @OA\Parameter(
-   *         name="id",
-   *         description="Note ID",
-   *         in="path",
-   *         required=true,
-   *         @OA\Schema(
-   *             type="integer"
-   *         )
-   *     ),
-   *     @OA\RequestBody(
-   *         description="Note payload format",
-   *         @OA\MediaType(
-   *            mediaType="application/json",
-   *            @OA\Schema(
-   *                type="object",
-   *                @OA\Property(
-   *                    property="title",
-   *                    description="Title of Note",
-   *                    type="string",
-   *                ),
-   *                @OA\Property(
-   *                    property="body",
-   *                    description="Write the note",
-   *                    type="string",
-   *                ),
-   *                @OA\Property(
-   *                    property="flight_id",
-   *                    description="Flight id",
-   *                    type="number",
-   *                )
-   *            )
-   *         )
-   *     ),
-   *     @OA\Response(response=200, description="Successfully updated note"),
-   *     @OA\Response(response=401, description="Token is invalid"),
-   *     @OA\Response(response=404, description="Unable to retrieve note")
-   * )
-  */
+    /**
+    * @OA\Put(
+    *     path="/api/notes/{id}",
+    *     summary="Update an existing note",
+    *     tags={"Note"},
+    *     security={{"token": {}}},
+    *     @OA\Parameter(
+    *         name="id",
+    *         description="Note ID",
+    *         in="path",
+    *         required=true,
+    *         @OA\Schema(
+    *             type="integer"
+    *         )
+    *     ),
+    *     @OA\RequestBody(
+    *         description="Note payload format",
+    *         @OA\MediaType(
+    *            mediaType="application/json",
+    *            @OA\Schema(
+    *                type="object",
+    *                @OA\Property(
+    *                    property="title",
+    *                    description="Title of Note",
+    *                    type="string",
+    *                ),
+    *                @OA\Property(
+    *                    property="body",
+    *                    description="Write the note",
+    *                    type="string",
+    *                ),
+    *                @OA\Property(
+    *                    property="flight_id",
+    *                    description="Flight id",
+    *                    type="number",
+    *                )
+    *            )
+    *         )
+    *     ),
+    *     @OA\Response(response=200, description="Successfully updated note"),
+    *     @OA\Response(response=401, description="Token is invalid"),
+    *     @OA\Response(response=404, description="Unable to retrieve note")
+    * )
+    */
 
-  // TODO: Create NoteEditRequest to omit flight_id
-  public function update(string $id, NoteRequest $request) {
+    // TODO: Create NoteEditRequest to omit flight_id
+    public function update(int $id, NoteRequest $request) {
 
-      $user = JWTAuth::parseToken()->authenticate();
+        $user = JWTAuth::parseToken()->authenticate();
 
-      $note = Note::find($id);
+        $note = NoteController::getAndValidateNoteAccess($id, $user->id);
 
-      if (empty($note)) {
-          return response()->json(['message' => __('note.not_found', ['id' => $id])], 404);
-      }
+        $flight = $note->flight;
 
-      if ($note->user_id !== $user->id) {
-          return response()->json(['message' => __('note.access_forbidden', ['id' => $id])], 403);
-      }
+        if (empty($flight)) {
+          throw new NotFoundHttpException(__('flight.not_found', ['id' => $note->flight_id]));
+        }
 
-      $flight = $note->flight;
+        if ($flight->user_id !== $user->id) {
+          throw new AccessDeniedHttpException(__('flight.access_forbidden', ['id' => $note->flight_id]));
+        }
 
-      if (empty($flight)) {
-          return response()->json([
-              'message' => __('flight.not_found', ['id' => $note->flight_id])
-          ], 404);
-      }
+        // TODO: Cannot update flight_id for note, it is permanent
+        $note->title = $request->title;
+        $note->body = $request->body;
+        $note->save();
 
-      if ($flight->user_id !== $user->id) {
-          return response()->json([
-              'message' => __('flight.access_forbidden', ['id' => $note->flight_id])
-          ], 403);
-      }
+        return response()->json($note);
+    }
 
-      // TODO: Cannot update flight_id for note, it is permanent
-      $note->title = $request->title;
-      $note->body = $request->body;
-      $note->save();
+    /**
+    * @OA\Delete(
+    *     path="/api/notes/{id}",
+    *     summary="Delete a specific note from user's list of notes",
+    *     tags={"Note"},
+    *     security={{"token": {}}},
+    *     @OA\Parameter(
+    *         name="id",
+    *         description="Note ID",
+    *         in="path",
+    *         required=true,
+    *         @OA\Schema(
+    *             type="integer"
+    *         )
+    *     ),
+    *     @OA\Response(response=204, description="Successfully deleted note"),
+    *     @OA\Response(response=401, description="Token is invalid"),
+    *     @OA\Response(response=404, description="Unable to retrieve note")
+    * )
+    */
+    public function delete(int $id) {
 
-      return response()->json($note);
-  }
+        $user = JWTAuth::parseToken()->authenticate();
 
-  /**
-   * @OA\Delete(
-   *     path="/api/notes/{id}",
-   *     summary="Delete a specific note from user's list of notes",
-   *     tags={"Note"},
-   *     security={{"token": {}}},
-   *     @OA\Parameter(
-   *         name="id",
-   *         description="Note ID",
-   *         in="path",
-   *         required=true,
-   *         @OA\Schema(
-   *             type="integer"
-   *         )
-   *     ),
-   *     @OA\Response(response=204, description="Successfully deleted note"),
-   *     @OA\Response(response=401, description="Token is invalid"),
-   *     @OA\Response(response=404, description="Unable to retrieve note")
-   * )
-  */
-  public function delete(string $id) {
+        $note = NoteController::getAndValidateNoteAccess($id, $user->id);
 
-      $user = JWTAuth::parseToken()->authenticate();
+        $note->delete();
 
-      $note = Note::find($id);
+        return response()->json([], 204);
+    }
 
-      if (empty($note)) {
-          return response()->json(['message' => __('note.not_found', ['id' => $id])], 404);
-      }
+    private static function getAndValidateNoteAccess(int $noteId, int $userId): Note {
 
-      if ($note->user_id !== $user->id) {
-          return response()->json(['message' => __('note.access_forbidden', ['id' => $id])], 403);
-      }
+        $note = Note::find($noteId);
 
-      $note->delete();
+        if (empty($note)) {
+          throw new NotFoundHttpException(__('note.not_found', ['id' => $noteId]));
+        }
 
-      return response()->json([], 204);
-  }
+        if ($note->user_id !== $userId) {
+          throw new AccessDeniedHttpException(__('note.access_forbidden', ['id' => $noteId]));
+        }
+
+        return $note;
+    }
 }

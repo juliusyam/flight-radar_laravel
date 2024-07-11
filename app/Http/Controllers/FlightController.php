@@ -11,6 +11,8 @@ use App\Models\Flight;
 use App\Providers\FlightProvider;
 use Illuminate\Http\Request;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class FlightController extends Controller
 {
@@ -107,19 +109,11 @@ class FlightController extends Controller
      *     @OA\Response(response=404, description="Unable to retrieve flight")
      * )
      */
-    public function get(string $id) {
+    public function get(int $id) {
 
         $user = JWTAuth::parseToken()->authenticate();
 
-        $flight = Flight::find($id);
-
-        if (empty($flight)) {
-            return response()->json(['message' => __('flight.not_found', ['id' => $id])], 404);
-        }
-
-        if ($flight->user_id !== $user->id) {
-            return response()->json(['message' => __('flight.access_forbidden', ['id' => $id])], 403);
-        }
+        $flight = FlightController::getAndValidateFlightAccess($id, $user->id);
 
         return response()->json($flight);
     }
@@ -253,19 +247,11 @@ class FlightController extends Controller
      *     @OA\Response(response=404, description="Unable to retrieve flight")
      * )
      */
-    public function update(string $id, FlightRequest $request) {
+    public function update(int $id, FlightRequest $request) {
 
         $user = JWTAuth::parseToken()->authenticate();
 
-        $flight = Flight::find($id);
-
-        if (empty($flight)) {
-            return response()->json(['message' => __('flight.not_found', ['id' => $id])], 404);
-        }
-
-        if ($flight->user_id !== $user->id) {
-            return response()->json(['message' => __('flight.access_forbidden', ['id' => $id])], 403);
-        }
+        FlightController::getAndValidateFlightAccess($id, $user->id);
 
         $flight = FlightProvider::update($id, [
             'departure_date' => $request->departure_date,
@@ -306,20 +292,27 @@ class FlightController extends Controller
 
         $user = JWTAuth::parseToken()->authenticate();
 
-        $flight = Flight::find($id);
-
-        if (empty($flight)) {
-            return response()->json(['message' => __('flight.not_found', ['id' => $id])], 404);
-        }
-
-        if ($flight->user_id !== $user->id) {
-            return response()->json(['message' => __('flight.access_forbidden', ['id' => $id])], 403);
-        }
+        $flight = FlightController::getAndValidateFlightAccess($id, $user->id);
 
         $flight->delete();
 
         ProcessDeletedFlight::dispatch($user->id, $flight->id);
 
         return response()->json([], 204);
+    }
+
+    public static function getAndValidateFlightAccess(int $flightId, int $userId): Flight {
+
+        $flight = Flight::find($flightId);
+
+        if (empty($flight)) {
+            throw new NotFoundHttpException(__('flight.not_found', ['id' => $flightId]));
+        }
+
+        if ($flight->user_id !== $userId) {
+            throw new AccessDeniedHttpException(__('flight.access_forbidden', ['id' => $flightId]));
+        }
+
+        return $flight;
     }
 }

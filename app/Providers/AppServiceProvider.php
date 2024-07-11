@@ -54,7 +54,7 @@ class AppServiceProvider extends ServiceProvider
  *     in="header",
  *     name="Authorization",
  *     type="apiKey"
- * ),
+ * )
  */
 class OpenApiSpec
 {
