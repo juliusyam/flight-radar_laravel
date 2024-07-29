@@ -299,7 +299,7 @@ class FlightController extends Controller
 
         Note::where('flight_id', $id)->delete();
 
-        ProcessDeletedFlight::dispatch($user->id, $flight->id);
+        ProcessDeletedFlight::dispatch($user->id, $id);
 
         return response()->json([], 204);
     }

@@ -16,6 +16,7 @@ class ForceJsonResponse
     public function handle(Request $request, Closure $next): Response
     {
         $request->headers->set('Accept', 'application/json');
+        app()->setLocale($request->headers->get('Accept-Language') ?? config('app.locale'));
         return $next($request);
     }
 }

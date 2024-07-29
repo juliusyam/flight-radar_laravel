@@ -97,7 +97,7 @@ class AuthController extends Controller
         $token = Auth::attempt($credentials);
 
         if (!$token) {
-            throw new UnauthorizedHttpException(__('auth.failed'));
+            throw new UnauthorizedHttpException('',  __('auth.failed'));
         }
 
         $user = Auth::user();
